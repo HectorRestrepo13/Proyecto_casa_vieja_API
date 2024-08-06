@@ -43,5 +43,8 @@ tbl_usuario.associate = (models) => {
         },
     });
 
+    tbl_usuario.hasMany(models.tbl_Mesa, {});
+
+
     return tbl_usuario;
 };

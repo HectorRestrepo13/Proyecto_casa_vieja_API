@@ -7,6 +7,13 @@ let app = express();
 app.use(cors())
 
 
+// llamo las rutas
+import rutaLogin from './src/routers/routers_login.js';
+
+
+app.use(rutaLogin)
+
+
 // Configurar CORS para permitir solicitudes desde múltiples orígenes
 const allowedOrigins = ['http://localhost:5173', 'http://localhost:5174'];
 app.use(cors({
@@ -47,8 +54,14 @@ app.use('/uploads', express.static(path.join(__dirname, './public/uploads')));
 // Asociaciones ENTRE LAS TABLAS
 import { tbl_usuario } from './src/models/tbl_Usuario.js';
 import { tbl_Rol } from './src/models/tbl_Rol.js';
+import { tbl_Mesa } from './src/models/tbl_Mesa.js';
+import { tbl_Pedidos } from './src/models/tbl_Pedidos.js';
+import { tbl_Menu } from './src/models/tbl_Menu.js';
+import { tbl_MenuDelDia } from './src/models/tbl_MenuDelDia.js';
+import { tbl_Cierre } from './src/models/tbl_Cierre.js';
+
 // Objeto de modelos
-const models = { tbl_usuario, tbl_Rol };
+const models = { tbl_usuario, tbl_Rol, tbl_Mesa, tbl_Pedidos, tbl_Menu, tbl_MenuDelDia, tbl_Cierre };
 
 // Establecer asociaciones
 Object.keys(models).forEach(modelName => {
