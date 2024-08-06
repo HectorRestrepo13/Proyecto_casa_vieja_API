@@ -1,70 +1,79 @@
 import { tbl_usuario } from "../models/tbl_Usuario.js";
 import bcrypt from "bcrypt";
 
-
-
-
 // FUNCION PARA REGISTRAR USUARIO
 
 export const func_registrarUsuario = async (req, res) => {
 
-    const { cedulaUsuario, nombreUsuario, telefonoUsuario, correoUsuario, paswordUsuario, idRol } = req.query;
+    const { cedulaUsuario, nombreUsuario, telefonoUsuario, correoUsuario, paswordUsuario, idRol } = req.body;
 
 
     try {
-        const salRondas = 10;
-        const contraIncriptada = `s0/\/${paswordUsuario}\P4$$w0rD`;
 
-        // funcion para saber si el usuario ya esta registrado
-        const usuarioExiste = await tbl_usuario.findOne({ where: { cedula: cedulaUsuario } });
-        if (usuarioExiste === null) {
+        if (cedulaUsuario != "" && nombreUsuario != "" && telefonoUsuario != "" && correoUsuario != "" && paswordUsuario != "" && idRol != "") {
+            const salRondas = 10;
+            const contraIncriptada = `s0/\/${paswordUsuario}\P4$$w0rD`;
 
-
-            //  PARA INCRITAR LA CONTRASEÑA UTILIZANDO BCRYPT
-            bcrypt.hash(contraIncriptada, salRondas, async function (err, hash) {
-                if (!err) {
-
-                    const insertacion = await tbl_usuario.create({
-                        cedula: cedulaUsuario,
-                        nombreCompleto: nombreUsuario,
-                        telefono: telefonoUsuario,
-                        correo: correoUsuario,
-                        password: hash,
-                        RolId: idRol,
-                    });
-                    // Todo salió bien, enviamos la respuesta exitosa
-                    res.status(200).send({
-                        status: true,
-                        descripcion: "Usuario insertado con exito",
-                        datos: insertacion,
-                        error: null
-                    })
+            // funcion para saber si el usuario ya esta registrado
+            const usuarioExiste = await tbl_usuario.findOne({ where: { cedula: cedulaUsuario } });
+            if (usuarioExiste === null) {
 
 
-                }
-                else {
-                    res.status(200).send({
-                        status: false,
-                        descripcion: "Hubo un error al Incriptar la Contraseña",
-                        datos: null,
-                        error: err
-                    })
-                }
+                //  PARA INCRITAR LA CONTRASEÑA UTILIZANDO BCRYPT
+                bcrypt.hash(contraIncriptada, salRondas, async function (err, hash) {
+                    if (!err) {
+
+                        const insertacion = await tbl_usuario.create({
+                            cedula: cedulaUsuario,
+                            nombreCompleto: nombreUsuario,
+                            telefono: telefonoUsuario,
+                            correo: correoUsuario,
+                            password: hash,
+                            RolId: idRol,
+                        });
+                        // Todo salió bien, enviamos la respuesta exitosa
+                        res.status(200).send({
+                            status: true,
+                            descripcion: "Usuario insertado con exito",
+                            datos: insertacion,
+                            error: null
+                        })
 
 
-            });
-            //  FIN INCRITACION 
+                    }
+                    else {
+                        res.status(200).send({
+                            status: false,
+                            descripcion: "Hubo un error al Incriptar la Contraseña",
+                            datos: null,
+                            error: err
+                        })
+                    }
 
-        } else {
 
+                });
+                //  FIN INCRITACION 
+
+            } else {
+
+                res.status(200).send({
+                    status: false,
+                    descripcion: "Usuario ya esta Registrado",
+                    datos: null,
+                    error: null
+                })
+
+            }
+        }
+        else {
             res.status(200).send({
                 status: false,
-                descripcion: "Usuario ya esta Registrado",
+                descripcion: "Esta mandando datos Vacios",
                 datos: null,
                 error: null
             })
-
         }
+
 
     } catch (error) {
         res.status(200).send({
@@ -86,50 +95,61 @@ export const func_registrarUsuario = async (req, res) => {
 
 export const func_iniciarSesion = async (req, res) => {
 
-    let correo = req.query.correo;
-    let contra = req.query.contra;
+    let correo = req.body.correo;
+    let contra = req.body.contra;
     try {
-        // aca voy a traer los datos del Usuario con el correo si devuelve null es porque no esta registrado
-        const verificacionCorreo = await tbl_usuario.findAll({
-            where: {
-                correo: correo,
-            },
-        });
+        if (correo != "" && contra != "") {
+            // aca voy a traer los datos del Usuario con el correo si devuelve null es porque no esta registrado
+            const verificacionCorreo = await tbl_usuario.findAll({
+                where: {
+                    correo: correo,
+                },
+            });
 
-        if (verificacionCorreo.length > 0) {
+            if (verificacionCorreo.length > 0) {
 
-            let contraBaseDatos = verificacionCorreo[0].password
+                let contraBaseDatos = verificacionCorreo[0].password
 
-            if (bcrypt.compareSync(`s0/\/${contra}\P4$$w0rD`, contraBaseDatos)) {
+                if (bcrypt.compareSync(`s0/\/${contra}\P4$$w0rD`, contraBaseDatos)) {
 
 
-                res.status(200).send({
-                    status: true,
-                    descripcion: "Exitoso Considen los Usuarios",
-                    error: null,
-                    datos: verificacionCorreo
-                })
+                    res.status(200).send({
+                        status: true,
+                        descripcion: "Exitoso Considen los Usuarios",
+                        error: null,
+                        datos: verificacionCorreo
+                    })
 
+
+                }
+                else {
+                    res.status(200).send({
+                        status: false,
+                        descripcion: "Contraseña Incorrecta",
+                        error: null,
+                        datos: null
+                    })
+                }
 
             }
             else {
                 res.status(200).send({
                     status: false,
-                    descripcion: "Contraseña Incorrecta",
+                    descripcion: "Usuario no Registrado",
                     error: null,
                     datos: null
                 })
             }
-
         }
         else {
             res.status(200).send({
                 status: false,
-                descripcion: "Usuario no Registrado",
+                descripcion: "Esta mandando Datos vacios",
                 error: null,
                 datos: null
             })
         }
+
 
 
     } catch (error) {

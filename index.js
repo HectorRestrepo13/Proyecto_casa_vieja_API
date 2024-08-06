@@ -9,9 +9,11 @@ app.use(cors())
 
 // llamo las rutas
 import rutaLogin from './src/routers/routers_login.js';
+import rutaMenu from './src/routers/routers_menu.js';
 
-
+app.use(express.json());
 app.use(rutaLogin)
+app.use(rutaMenu)
 
 
 // Configurar CORS para permitir solicitudes desde múltiples orígenes
@@ -31,7 +33,6 @@ app.use(cors({
 import dotenv from 'dotenv'; // llamo la libreria 
 dotenv.config();
 
-app.use(express.json());
 const puerto = process.env.PORT || 3000;
 
 
