@@ -1,22 +1,15 @@
-
-import express from 'express'
-import path from 'path'
+import express from 'express';
+import path from 'path';
 import sequelize from "./src/models/conexion.js";
-import cors from 'cors'
-let app = express();
-app.use(cors())
+import cors from 'cors';
+import dotenv from 'dotenv'; // Importar dotenv lo antes posible
+import { fileURLToPath } from 'url';
 
+dotenv.config(); // Inicializar dotenv
 
-// llamo las rutas
-import rutaLogin from './src/routers/routers_login.js';
-import rutaMenu from './src/routers/routers_menu.js';
+const app = express();
 
-app.use(express.json());
-app.use(rutaLogin)
-app.use(rutaMenu)
-
-
-// Configurar CORS para permitir solicitudes desde múltiples orígenes
+// Configuración de CORS para permitir solicitudes desde múltiples orígenes
 const allowedOrigins = ['http://localhost:5173', 'http://localhost:5174'];
 app.use(cors({
     origin: (origin, callback) => {
@@ -30,23 +23,19 @@ app.use(cors({
     allowedHeaders: ['Content-Type'],
 }));
 
-import dotenv from 'dotenv'; // llamo la libreria 
-dotenv.config();
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-const puerto = process.env.PORT || 3000;
+// Importar rutas
+import rutaLogin from './src/routers/routers_login.js';
+import rutaMenu from './src/routers/routers_menu.js';
 
-
-import { fileURLToPath } from 'url';
-
-
-// En Node.js, cuando se utiliza CommonJS (CJS), __dirname y _
-// _filename están disponibles por defecto y representan el directorio actual y
-//  la ruta del archivo actual, respectivamente. Sin embargo, cuando se utiliza ECMAScript
-//   Modules (ESM) especificando "type": "module" en el archivo package.json, estas variables 
-//   no están disponibles. Para obtener el mismo resultado, necesitas usar la API de import.meta.url.
+// Usar rutas
+app.use(rutaLogin);
+app.use(rutaMenu);
 
 // Obtener la ruta del archivo actual y el directorio actual
-const __filename = fileURLToPath(import.meta.url);  // import.meta.url: Proporciona la URL del módulo actual.
+const __filename = fileURLToPath(import.meta.url); // import.meta.url: Proporciona la URL del módulo actual.
 const __dirname = path.dirname(__filename);
 
 // Servir archivos estáticos desde la carpeta "public/uploads"
@@ -70,19 +59,18 @@ Object.keys(models).forEach(modelName => {
         models[modelName].associate(models);
     }
 });
-// -- FIN --
+
+const puerto = process.env.PORT || 3000;
 
 app.server = app.listen(puerto, () => {
-    console.log(`Server ejecutandose en ${puerto}...`);
+    console.log(`Server ejecutándose en el puerto ${puerto}...`);
 });
 
 sequelize
     .sync({ force: false })
     .then(() => {
-        console.log("sincronizacion ok!");
+        console.log("Sincronización OK!");
     })
     .catch((error) => {
-        console.log(`error en la sincronizacion ${error}`);
+        console.log(`Error en la sincronización: ${error}`);
     });
-
-
