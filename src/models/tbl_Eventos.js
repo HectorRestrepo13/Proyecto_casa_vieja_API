@@ -1,17 +1,18 @@
 import { DataTypes } from "sequelize";
 import sequelize from "./conexion.js";
 
-
-export const tbl_Cierre = sequelize.define("Cierre", {
-
+export const tbl_Eventos = sequelize.define("Eventos", {
     id: {
         type: DataTypes.INTEGER,
         allowNull: false,
-        primaryKey: true, // Define cedula como llave primaria
+        primaryKey: true, // Define id como llave primaria
         autoIncrement: true // Establece el campo como autoincrementable
-
     },
-    cantidadPlatos: {
+    nombreEvento: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    cantidadPersonas: {
         type: DataTypes.INTEGER,
         allowNull: false
     },
@@ -23,12 +24,15 @@ export const tbl_Cierre = sequelize.define("Cierre", {
         type: DataTypes.DATE,
         allowNull: false
     },
-    cantidadEventos: {
-        type: DataTypes.INTEGER,
-        allowNull: false
+    descripcion: {
+        type: DataTypes.TEXT,
+        allowNull: true
     },
-
+    estado:{
+        type:DataTypes.BOOLEAN,
+        allowNull:false,
+        defaultValue:1 //Valor por defecto 1 (activo)
+    }
 }, {
     timestamps: false // Desactiva las columnas createdAt y updatedAt
-}
-)
+});
