@@ -1,6 +1,25 @@
 import { tbl_Eventos } from "../models/tbl_Eventos.js";
 
-//Creamos el evento
+/**
+ * Crear un nuevo evento.
+ *
+ * Este endpoint permite crear un evento en la base de datos con los detalles proporcionados en el cuerpo de la solicitud.
+ *
+ * @async
+ * @function crearEvento
+ * @param {Object} req - Objeto de solicitud (Request) de Express. Debe incluir los datos del evento en `req.body`.
+ * @param {string} req.body.nombreEvento - Nombre del evento.
+ * @param {string} req.body.nombrePersona - Nombre de la persona encargada del evento.
+ * @param {number} req.body.cantidadPersonas - Cantidad de personas que asistirán al evento.
+ * @param {number} req.body.abono - Monto del abono para el evento.
+ * @param {Date} req.body.fecha - Fecha del evento.
+ * @param {string} [req.body.descripcion] - Descripción opcional del evento.
+ * @param {string} req.body.nombreReservante - Nombre de la persona que reservó el evento.
+ * @param {string} req.body.telefonoReservante - Teléfono de contacto de la persona que reservó el evento.
+ * @param {string} [req.body.emailReservante] - Correo electrónico opcional de la persona que reservó el evento.
+ * @param {Object} res - Objeto de respuesta (Response) de Express.
+ * @returns {JSON} Devuelve un objeto JSON que indica el éxito de la creación del evento o un mensaje de error en caso contrario.
+ */
 export const crearEvento = async (req, res) => {
     const {
         nombreEvento,
@@ -52,7 +71,30 @@ export const crearEvento = async (req, res) => {
 }
 
 
-// Editamos el evento
+/**
+ * Editar un evento existente.
+ *
+ * Este endpoint permite actualizar los detalles de un evento específico en la base de datos
+ * usando el identificador proporcionado en los parámetros de la solicitud y los datos nuevos en el cuerpo de la solicitud.
+ *
+ * @async
+ * @function editarEvento
+ * @param {Object} req - Objeto de solicitud (Request) de Express. Debe incluir el identificador del evento en los parámetros y los datos actualizados en `req.body`.
+ * @param {Object} req.params - Parámetros de la solicitud.
+ * @param {string} req.params.id - Identificador del evento a actualizar.
+ * @param {Object} req.body - Cuerpo de la solicitud que contiene los datos actualizados del evento.
+ * @param {string} req.body.nombreEvento - Nuevo nombre del evento.
+ * @param {string} req.body.nombrePersona - Nuevo nombre de la persona encargada del evento.
+ * @param {number} req.body.cantidadPersonas - Nueva cantidad de personas que asistirán al evento.
+ * @param {number} req.body.abono - Nuevo monto del abono para el evento.
+ * @param {Date} req.body.fecha - Nueva fecha del evento.
+ * @param {string} req.body.descripcion - Nueva descripción del evento.
+ * @param {string} req.body.nombreReservante - Nuevo nombre de la persona que reservó el evento.
+ * @param {string} req.body.telefonoReservante - Nuevo teléfono de contacto de la persona que reservó el evento.
+ * @param {string} req.body.emailReservante - Nuevo correo electrónico de la persona que reservó el evento.
+ * @param {Object} res - Objeto de respuesta (Response) de Express.
+ * @returns {JSON} Devuelve un objeto JSON que indica el éxito de la actualización del evento o un mensaje de error en caso contrario.
+ */
 export const editarEvento = async (req, res) => {
     const { id } = req.params;
     const { nombreEvento, nombrePersona, cantidadPersonas, abono, fecha, descripcion, nombreReservante, telefonoReservante, emailReservante } = req.body;
@@ -101,8 +143,22 @@ export const editarEvento = async (req, res) => {
 };
 
 
-//Cambiamos el estado del evento
-
+/**
+ * Cambiar el estado de un evento existente.
+ *
+ * Este endpoint permite actualizar el estado de un evento específico en la base de datos
+ * usando el identificador proporcionado en los parámetros de la solicitud y el nuevo estado en el cuerpo de la solicitud.
+ *
+ * @async
+ * @function cambiarEstadoEvento
+ * @param {Object} req - Objeto de solicitud (Request) de Express. Debe incluir el identificador del evento en los parámetros y el nuevo estado en `req.body`.
+ * @param {Object} req.params - Parámetros de la solicitud.
+ * @param {string} req.params.id - Identificador del evento cuyo estado se desea cambiar.
+ * @param {Object} req.body - Cuerpo de la solicitud que contiene el nuevo estado del evento.
+ * @param {number} req.body.estado - Nuevo estado del evento. Debe ser 0 (inactivo) o 1 (activo).
+ * @param {Object} res - Objeto de respuesta (Response) de Express.
+ * @returns {JSON} Devuelve un objeto JSON que indica el éxito del cambio de estado o un mensaje de error en caso contrario.
+ */
 export const cambiarEstadoEvento = async (req, res)=>{
     const {estado}=req.body;
     const {id}=req.params;
@@ -144,7 +200,17 @@ export const cambiarEstadoEvento = async (req, res)=>{
 }
 
 
-//Traer evento
+/**
+ * Obtener todos los eventos registrados en la base de datos.
+ *
+ * Este endpoint recupera todos los eventos existentes en la base de datos y los devuelve en la respuesta.
+ *
+ * @async
+ * @function traerTodosEventos
+ * @param {Object} req - Objeto de solicitud (Request) de Express.
+ * @param {Object} res - Objeto de respuesta (Response) de Express.
+ * @returns {JSON} Devuelve un objeto JSON que contiene una lista de todos los eventos registrados o un mensaje de error en caso de problemas con el servidor.
+ */
 export const traerTodosEventos = async (req, res)=>{
     try {
         const traerTodo= await tbl_Eventos.findAll();
@@ -162,7 +228,18 @@ export const traerTodosEventos = async (req, res)=>{
     }
 }
 
-// Traer evento por id
+/**
+ * Obtener un evento específico por su ID.
+ *
+ * Este endpoint recupera un evento de la base de datos utilizando su ID proporcionado en los parámetros de la solicitud.
+ *
+ * @async
+ * @function traerEventoId
+ * @param {Object} req - Objeto de solicitud (Request) de Express.
+ * @param {Object} res - Objeto de respuesta (Response) de Express.
+ * @param {string} req.params.id - El ID del evento que se desea recuperar.
+ * @returns {JSON} Devuelve un objeto JSON con el evento encontrado o un mensaje de error si el evento no existe o hay un problema con la solicitud.
+ */
 export const traerEventoId = async (req, res) => {
     const { id } = req.params;
 

@@ -8,6 +8,12 @@ import sequelize from './src/models/conexion.js';
 // Inicializar dotenv para cargar variables de entorno
 dotenv.config();
 
+/**
+ * Inicializa una aplicación Express y configura sus middleware y rutas.
+ * 
+ * @module app
+ */
+
 // Inicializar Express
 const app = express();
 
@@ -41,7 +47,7 @@ app.use('/api/login', rutaLogin);
 app.use('/api/cierre', rutaCierre);
 app.use('/api/usuario', rutaUsuario);
 app.use('/api/menu', rutaMenu);
-app.use('/api/evento',rutaEvento)
+app.use('/api/evento', rutaEvento);
 
 // Obtener la ruta del archivo actual y el directorio actual
 const __filename = fileURLToPath(import.meta.url);
@@ -50,7 +56,7 @@ const __dirname = path.dirname(__filename);
 // Servir archivos estáticos desde la carpeta "public/uploads"
 app.use('/uploads', express.static(path.join(__dirname, './public/uploads')));
 
-// Asociaciones entre las tablas
+// Importar modelos y establecer asociaciones
 import { tbl_usuario } from './src/models/tbl_Usuario.js';
 import { tbl_Rol } from './src/models/tbl_Rol.js';
 import { tbl_Pedido } from './src/models/tbl_Pedido.js';
@@ -72,7 +78,7 @@ const models = {
     tbl_Eventos,
 };
 
-// Establecer asociaciones
+// Establecer asociaciones entre modelos
 Object.keys(models).forEach(modelName => {
     if ('associate' in models[modelName]) {
         models[modelName].associate(models);

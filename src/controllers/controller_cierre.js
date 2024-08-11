@@ -1,6 +1,22 @@
 import { tbl_Cierre } from "../models/tbl_Cierre.js";
 
-// Crear cierre
+/**
+ * Crea un nuevo cierre de jornada.
+ *
+ * Este endpoint recibe los detalles de un cierre de jornada, valida los campos requeridos
+ * y crea un nuevo registro en la base de datos con la información proporcionada.
+ *
+ * @async
+ * @function crearCierre
+ * @param {Object} req - Objeto de solicitud (Request) de Express.
+ * @param {Object} req.body - El cuerpo de la solicitud que contiene los detalles del cierre.
+ * @param {number} req.body.cantidadPlatos - La cantidad total de platos servidos en la jornada.
+ * @param {number} req.body.valorTotal - El valor total recaudado en la jornada.
+ * @param {string} req.body.fecha - La fecha del cierre en formato `YYYY-MM-DD`.
+ * @param {number} req.body.cantidadEventos - La cantidad total de eventos realizados en la jornada.
+ * @param {Object} res - Objeto de respuesta (Response) de Express.
+ * @returns {JSON} Devuelve un objeto JSON que indica el éxito o el error de la operación.
+ */
 export const crearCierre = async (req, res) => {
   const { cantidadPlatos, valorTotal, fecha, cantidadEventos } = req.body;
 
@@ -34,7 +50,25 @@ export const crearCierre = async (req, res) => {
   }
 };
 
-// Editar cierre
+/**
+ * Editar un cierre existente.
+ *
+ * Este endpoint permite editar los detalles de un cierre existente en la base de datos.
+ * Los campos obligatorios deben ser proporcionados en la solicitud.
+ *
+ * @async
+ * @function editarCierre
+ * @param {Object} req - Objeto de solicitud (Request) de Express.
+ * @param {Object} req.params - Parámetros de la ruta.
+ * @param {number} req.params.id - El ID del cierre a editar.
+ * @param {Object} req.body - El cuerpo de la solicitud que contiene los nuevos detalles del cierre.
+ * @param {number} req.body.cantidadPlatos - La nueva cantidad total de platos servidos.
+ * @param {number} req.body.valorTotal - El nuevo valor total recaudado.
+ * @param {string} req.body.fecha - La nueva fecha del cierre en formato `YYYY-MM-DD`.
+ * @param {number} req.body.cantidadEventos - La nueva cantidad total de eventos realizados.
+ * @param {Object} res - Objeto de respuesta (Response) de Express.
+ * @returns {JSON} Devuelve un objeto JSON que indica el éxito o el error de la operación.
+ */
 export const editarCierre = async (req, res) => {
   const { id } = req.params;
   const { cantidadPlatos, valorTotal, fecha, cantidadEventos } = req.body;
@@ -80,7 +114,17 @@ export const editarCierre = async (req, res) => {
   }
 };
 
-//Traer todos los cierres
+/**
+ * Traer todos los cierres.
+ *
+ * Este endpoint permite obtener todos los registros de cierres de la base de datos.
+ *
+ * @async
+ * @function traerTodosCierre
+ * @param {Object} req - Objeto de solicitud (Request) de Express.
+ * @param {Object} res - Objeto de respuesta (Response) de Express.
+ * @returns {JSON} Devuelve un objeto JSON que contiene todos los cierres o un mensaje de error si no hay cierres.
+ */
 export const traerTodosCierre = async (req, res) => {
   try {
     const traerTodos = await tbl_Cierre.findAll();
@@ -104,7 +148,17 @@ export const traerTodosCierre = async (req, res) => {
   }
 };
 
-//Traer cierre por ID
+/**
+ * Traer cierre por ID.
+ *
+ * Este endpoint permite obtener un cierre específico de la base de datos utilizando su ID.
+ *
+ * @async
+ * @function traerCierreID
+ * @param {Object} req - Objeto de solicitud (Request) de Express. Debe incluir el ID del cierre en `req.params`.
+ * @param {Object} res - Objeto de respuesta (Response) de Express.
+ * @returns {JSON} Devuelve un objeto JSON que contiene los datos del cierre o un mensaje de error si no se encuentra.
+ */
 export const traerCierreID = async (req, res) => {
   const { id } = req.params;
   if (!id) {

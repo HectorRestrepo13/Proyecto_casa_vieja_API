@@ -2,7 +2,23 @@ import { tbl_usuario } from "../models/tbl_Usuario.js";
 import { tbl_Rol } from "../models/tbl_Rol.js";
 import bcrypt from "bcrypt";
 
-//Crear usuario
+/**
+ * Crear un nuevo usuario.
+ *
+ * Este endpoint permite crear un nuevo usuario en la base de datos. Valida los datos proporcionados, verifica si el correo electrónico y la identificación ya existen, y comprueba si el rol proporcionado es válido. Si todo está correcto, se encripta la contraseña y se crea el nuevo usuario.
+ *
+ * @async
+ * @function crearUsuario
+ * @param {Object} req - Objeto de solicitud (Request) de Express.
+ * @param {Object} res - Objeto de respuesta (Response) de Express.
+ * @param {string} req.body.cedula - La cédula del usuario, que debe ser única.
+ * @param {string} req.body.nombreCompleto - El nombre completo del usuario.
+ * @param {string} req.body.telefono - El número de teléfono del usuario.
+ * @param {string} req.body.correo - El correo electrónico del usuario, que debe ser único.
+ * @param {string} req.body.password - La contraseña del usuario, que se encriptará antes de almacenarse.
+ * @param {number} req.body.rol - El ID del rol del usuario, que debe existir en la base de datos.
+ * @returns {JSON} Devuelve un objeto JSON con el estado de la operación. Si el usuario se crea correctamente, devuelve un mensaje de éxito. Si hay errores, devuelve mensajes de error específicos.
+ */
 export const crearUsuario = async (req, res) => {
   const { cedula, nombreCompleto, telefono, correo, password, rol } = req.body;
 
@@ -64,7 +80,23 @@ export const crearUsuario = async (req, res) => {
   }
 };
 
-// Editar usuario
+/**
+ * Editar un usuario existente.
+ *
+ * Este endpoint permite actualizar los detalles de un usuario en la base de datos. Valida los datos proporcionados, verifica si el usuario con la identificación dada existe, encripta la nueva contraseña y actualiza el usuario en la base de datos.
+ *
+ * @async
+ * @function EditarUsuario
+ * @param {Object} req - Objeto de solicitud (Request) de Express.
+ * @param {Object} res - Objeto de respuesta (Response) de Express.
+ * @param {string} req.params.identificacion - La cédula del usuario a editar.
+ * @param {string} req.body.nombreCompleto - El nuevo nombre completo del usuario.
+ * @param {string} req.body.telefono - El nuevo número de teléfono del usuario.
+ * @param {string} req.body.correo - El nuevo correo electrónico del usuario.
+ * @param {string} req.body.password - La nueva contraseña del usuario, que se encriptará antes de almacenarse.
+ * @param {number} req.body.rolId - El nuevo ID del rol del usuario, que debe existir en la base de datos.
+ * @returns {JSON} Devuelve un objeto JSON con el estado de la operación. Si el usuario se edita correctamente, devuelve un mensaje de éxito. Si hay errores, devuelve mensajes de error específicos.
+ */
 export const EditarUsuario = async (req, res) => {
   const { nombreCompleto, telefono, correo, password, rolId } = req.body;
   const { identificacion } = req.params;
@@ -125,7 +157,19 @@ export const EditarUsuario = async (req, res) => {
   }
 };
 
-// Cambiar estado del usuario
+/**
+ * Cambia el estado de un usuario.
+ *
+ * Este endpoint permite actualizar el estado de un usuario en la base de datos. El estado debe ser 1 (activo) o 0 (inactivo). La función valida la identificación del usuario y el estado proporcionado, busca al usuario en la base de datos y actualiza su estado.
+ *
+ * @async
+ * @function CambiarEstadoUsuario
+ * @param {Object} req - Objeto de solicitud (Request) de Express.
+ * @param {Object} res - Objeto de respuesta (Response) de Express.
+ * @param {string} req.params.identificacion - La cédula del usuario cuyo estado se desea cambiar.
+ * @param {number} req.body.estado - El nuevo estado del usuario, debe ser 1 (activo) o 0 (inactivo).
+ * @returns {JSON} Devuelve un objeto JSON con el estado de la operación. Si el estado se actualiza correctamente, devuelve un mensaje de éxito. Si hay errores, devuelve mensajes de error específicos.
+ */
 export const CambiarEstadoUsuario = async (req, res) => {
   const { identificacion } = req.params;
   const { estado } = req.body; // El estado debe ser 1 (activo) o 0 (inactivo)
@@ -171,7 +215,18 @@ export const CambiarEstadoUsuario = async (req, res) => {
 };
 
 
-//Traer todos los usuarios
+/**
+ * Obtiene todos los usuarios de la base de datos.
+ *
+ * Este endpoint permite recuperar una lista de todos los usuarios registrados en la base de datos. La función maneja la recuperación de datos y responde con la lista de usuarios o con un mensaje de error si no se encuentran usuarios o si ocurre un problema en el servidor.
+ *
+ * @async
+ * @function TraerTodosUsuarios
+ * @param {Object} req - Objeto de solicitud (Request) de Express. No se requieren parámetros específicos en la solicitud.
+ * @param {Object} res - Objeto de respuesta (Response) de Express.
+ * @returns {JSON} Devuelve un objeto JSON con el estado de la operación y los datos de los usuarios si se encuentran, o un mensaje de error si no hay usuarios o ocurre un problema.
+ * @throws {Object} Devuelve un objeto JSON con un mensaje de error en caso de fallo en la recuperación de datos.
+ */
 export const TraerTodosUsuarios = async (req, res)=>{
    
 try {
@@ -197,7 +252,18 @@ try {
 };
 
 
-// Traer usuario por ID
+/**
+ * Obtiene un usuario específico por su identificación.
+ *
+ * Este endpoint permite recuperar la información de un usuario registrado en la base de datos utilizando su identificación. La función maneja la búsqueda del usuario y responde con los datos del usuario si se encuentra, o con un mensaje de error si no se encuentra el usuario o si ocurre un problema en el servidor.
+ *
+ * @async
+ * @function TraerUsuarioId
+ * @param {Object} req - Objeto de solicitud (Request) de Express. Debe contener un parámetro en `req.params` con la identificación del usuario.
+ * @param {Object} res - Objeto de respuesta (Response) de Express.
+ * @returns {JSON} Devuelve un objeto JSON con el estado de la operación y los datos del usuario si se encuentra, o un mensaje de error si el usuario no se encuentra o ocurre un problema.
+ * @throws {Object} Devuelve un objeto JSON con un mensaje de error en caso de que la identificación no se proporcione o de un fallo en la búsqueda del usuario.
+ */
 export const TraerUsuarioId = async (req, res) => {
     const { identificacion } = req.params;
   
