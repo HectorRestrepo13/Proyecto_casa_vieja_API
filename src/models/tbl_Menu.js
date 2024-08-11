@@ -39,7 +39,7 @@ export const tbl_Menu = sequelize.define("Menu", {
 
 
 tbl_Menu.associate = (models) => {
-    tbl_Menu.hasMany(models.tbl_Pedidos, {});
+    tbl_Menu.hasMany(models.tbl_DetallePedidos, {});
 
     return tbl_Menu;
 };

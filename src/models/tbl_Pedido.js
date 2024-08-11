@@ -2,17 +2,13 @@ import { DataTypes } from "sequelize";
 
 import sequelize from "./conexion.js";
 
-export const tbl_Mesa = sequelize.define("Mesa", {
+export const tbl_Pedido = sequelize.define("Pedidos", {
     id: {
         type: DataTypes.INTEGER,
         allowNull: false,
         primaryKey: true, // Define cedula como llave primaria
         autoIncrement: true // Establece el campo como autoincrementable
 
-    },
-    numeroDeMesa: {
-        type: DataTypes.STRING(10),
-        allowNull: false
     },
     fechaPedido: {
         type: DataTypes.DATE,
@@ -22,6 +18,16 @@ export const tbl_Mesa = sequelize.define("Mesa", {
         type: DataTypes.BIGINT,
         allowNull: false
     },
+    estado:{
+        type: DataTypes.BOOLEAN,
+        allowNull:null,
+        defaultValue:1 //Valor por defecto 1 (activo)
+
+    },
+    metodoPago:{
+        type: DataTypes.STRING,
+        allowNull:null,
+    }
 
 }, {
     timestamps: false // Desactiva las columnas createdAt y updatedAt
@@ -29,16 +35,16 @@ export const tbl_Mesa = sequelize.define("Mesa", {
 )
 
 
-tbl_Mesa.associate = (models) => {
-    tbl_Mesa.belongsTo(models.tbl_usuario, {
+tbl_Pedido.associate = (models) => {
+    tbl_Pedido.belongsTo(models.tbl_usuario, {
         foreignKey: {
             allowNull: false,
         },
     });
 
 
-    tbl_Mesa.hasMany(models.tbl_Pedidos, {});
+    tbl_Pedido.hasMany(models.tbl_DetallePedidos, {});
 
 
-    return tbl_Mesa;
+    return tbl_Pedido;
 };

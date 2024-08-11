@@ -34,12 +34,14 @@ import rutaLogin from './src/routers/routers_login.js';
 import rutaCierre from './src/routers/routers_cierre.js';
 import rutaUsuario from './src/routers/routers_usuarios.js';
 import rutaMenu from './src/routers/routers_menu.js';
+import rutaEvento from './src/routers/routers_eventos.js';
 
 // Usar rutas
 app.use('/api/login', rutaLogin);
 app.use('/api/cierre', rutaCierre);
 app.use('/api/usuario', rutaUsuario);
 app.use('/api/menu', rutaMenu);
+app.use('/api/evento',rutaEvento)
 
 // Obtener la ruta del archivo actual y el directorio actual
 const __filename = fileURLToPath(import.meta.url);
@@ -51,8 +53,8 @@ app.use('/uploads', express.static(path.join(__dirname, './public/uploads')));
 // Asociaciones entre las tablas
 import { tbl_usuario } from './src/models/tbl_Usuario.js';
 import { tbl_Rol } from './src/models/tbl_Rol.js';
-import { tbl_Mesa } from './src/models/tbl_Mesa.js';
-import { tbl_Pedidos } from './src/models/tbl_Pedidos.js';
+import { tbl_Pedido } from './src/models/tbl_Pedido.js';
+import { tbl_DetallePedidos } from './src/models/tbl_DetallePedidos.js';
 import { tbl_Menu } from './src/models/tbl_Menu.js';
 import { tbl_MenuDelDia } from './src/models/tbl_MenuDelDia.js';
 import { tbl_Cierre } from './src/models/tbl_Cierre.js';
@@ -62,8 +64,8 @@ import { tbl_Eventos } from './src/models/tbl_Eventos.js';
 const models = {
     tbl_usuario,
     tbl_Rol,
-    tbl_Mesa,
-    tbl_Pedidos,
+    tbl_Pedido,
+    tbl_DetallePedidos,
     tbl_Menu,
     tbl_MenuDelDia,
     tbl_Cierre,
