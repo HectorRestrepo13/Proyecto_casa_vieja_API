@@ -4,6 +4,7 @@ import sequelize from "./src/models/conexion.js";
 import cors from 'cors';
 import dotenv from 'dotenv'; // Importar dotenv lo antes posible
 import { fileURLToPath } from 'url';
+import cookieParser from 'cookie-parser';
 
 dotenv.config(); // Inicializar dotenv
 
@@ -24,6 +25,7 @@ app.use(cors({
 }));
 
 app.use(express.json());
+app.use(cookieParser()) // cookie
 app.use(express.urlencoded({ extended: true }));
 
 // Importar rutas

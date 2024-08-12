@@ -1,5 +1,10 @@
 import { tbl_usuario } from "../models/tbl_Usuario.js";
 import bcrypt from "bcrypt";
+import jwt from 'jsonwebtoken'
+import dotenv from 'dotenv'
+import cookieParser from "cookie-parser";
+
+dotenv.config();
 
 // FUNCION PARA REGISTRAR USUARIO
 
@@ -112,11 +117,18 @@ export const func_iniciarSesion = async (req, res) => {
 
                 if (bcrypt.compareSync(`s0/\/${contra}\P4$$w0rD`, contraBaseDatos)) {
 
+                    const token = jwt.sign({ datos: verificacionCorreo },
+                        process.env.SECRET_JWT_KEY,
+                        {
+                            expiresIn: '2h'
+                        }
+                    )
 
                     res.status(200).send({
                         status: true,
                         descripcion: "Exitoso Considen los Usuarios",
                         error: null,
+                        token: token,
                         datos: verificacionCorreo
                     })
 
@@ -127,6 +139,7 @@ export const func_iniciarSesion = async (req, res) => {
                         status: false,
                         descripcion: "Contraseña Incorrecta",
                         error: null,
+                        token: null,
                         datos: null
                     })
                 }
@@ -137,6 +150,7 @@ export const func_iniciarSesion = async (req, res) => {
                     status: false,
                     descripcion: "Usuario no Registrado",
                     error: null,
+                    token: null,
                     datos: null
                 })
             }
@@ -146,6 +160,7 @@ export const func_iniciarSesion = async (req, res) => {
                 status: false,
                 descripcion: "Esta mandando Datos vacios",
                 error: null,
+                token: null,
                 datos: null
             })
         }
@@ -157,6 +172,7 @@ export const func_iniciarSesion = async (req, res) => {
             status: false,
             descripcion: "Hubo un error en la API",
             error: error.message,
+            token: null,
             datos: null
         })
     }

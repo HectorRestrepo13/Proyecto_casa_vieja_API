@@ -44,7 +44,7 @@ rutaLogin.post("/login/registrarUsuario/", [
 ], customValidationMiddleware, func_registrarUsuario);
 
 // RUTA INICIAR SESION
-rutaLogin.get("/login/iniciarSesion/", [
+rutaLogin.post("/login/iniciarSesion/", [
     check('correo', 'Debe Ingresar un Correo').not().isEmpty(),
     check('correo', 'email obligatorio').isEmail(),
     check('contra', 'debe ingresar una contraseña').not().isEmpty(),
