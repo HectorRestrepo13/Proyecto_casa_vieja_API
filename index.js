@@ -4,6 +4,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import { fileURLToPath } from 'url';
 import cookieParser from 'cookie-parser';
+import sequelize from './src/models/conexion.js';
 
 // Inicializar dotenv para cargar variables de entorno
 dotenv.config();

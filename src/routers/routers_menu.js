@@ -81,7 +81,7 @@ rutaMenu.get("/menu/selecionarTodosLosMenus/", verificarToken, func_selecionarTo
 rutaMenu.delete("/menu/EliminarMenu/",
     [
         check('idMenu', 'Debe ingresar una URL válida de la imagen').not().isEmpty(),
-        check('urlImagenMenu', 'debe ingresar La URL de la Imagen').not().isEmpty().isURL(),
+        check('urlImagenMenu', 'debe ingresar La URL de la Imagen').not().isEmpty(),
 
     ], customValidationMiddleware, verificarToken, func_EliminarMenu);
 
