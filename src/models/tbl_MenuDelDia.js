@@ -36,7 +36,7 @@ export const tbl_MenuDelDia = sequelize.define("MenuDelDia",
 
 
 tbl_MenuDelDia.associate = (models) => {
-    tbl_MenuDelDia.hasMany(models.tbl_Pedidos, {});
+    tbl_MenuDelDia.hasMany(models.tbl_DetallePedidos, {});
 
     return tbl_MenuDelDia;
 };
