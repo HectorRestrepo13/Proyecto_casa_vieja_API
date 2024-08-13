@@ -19,7 +19,6 @@ dotenv.config();
 const app = express();
 
 // Configurar middleware para parsear JSON y formularios URL-encoded
-app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Configuración de CORS para permitir solicitudes desde múltiples orígenes
@@ -46,6 +45,7 @@ import rutaCierre from './src/routers/routers_cierre.js';
 import rutaUsuario from './src/routers/routers_usuarios.js';
 import rutaMenu from './src/routers/routers_menu.js';
 import rutaEvento from './src/routers/routers_eventos.js';
+import rutaPedido from './src/routers/routers_Pedido.js';
 
 // Usar rutas
 app.use('/api/login', rutaLogin);
@@ -53,6 +53,7 @@ app.use('/api/cierre', rutaCierre);
 app.use('/api/usuario', rutaUsuario);
 app.use('/api/menu', rutaMenu);
 app.use('/api/evento', rutaEvento);
+app.use('/api/pedido', rutaPedido);
 
 // Obtener la ruta del archivo actual y el directorio actual
 const __filename = fileURLToPath(import.meta.url);

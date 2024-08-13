@@ -18,15 +18,15 @@ export const tbl_Pedido = sequelize.define("Pedidos", {
         type: DataTypes.BIGINT,
         allowNull: false
     },
-    estado:{
-        type: DataTypes.BOOLEAN,
-        allowNull:null,
-        defaultValue:1 //Valor por defecto 1 (activo)
+    estado: {
+        type: DataTypes.STRING,
+        allowNull: null,
+        defaultValue: "Preparacion" //Valor por defecto 1 (activo)
 
     },
-    metodoPago:{
+    metodoPago: {
         type: DataTypes.STRING,
-        allowNull:null,
+        allowNull: null,
     }
 
 }, {

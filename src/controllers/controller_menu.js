@@ -16,7 +16,27 @@ if (!fs.existsSync(uploadDir)) { // verifico si existe
 
 // ============================================================================
 
-// Configuración del middleware para subir archivos al servidor
+/**
+ * Configuración del middleware para subir archivos al servidor utilizando Multer.
+ *
+ * Este middleware define cómo y dónde se almacenarán los archivos subidos a través de las solicitudes HTTP.
+ * Utiliza `multer.diskStorage` para especificar el destino y el nombre de los archivos subidos.
+ *
+ * @constant
+ * @type {Object}
+ * @property {Function} destination - Define la carpeta de destino donde se almacenarán los archivos subidos.
+ * @property {Function} filename - Define cómo se nombrarán los archivos subidos. 
+ * El nombre del archivo sigue el formato "pe-[timestamp]-[nombreOriginalDelArchivo]".
+ *
+ * @example
+ * // Uso en una ruta para subir un archivo
+ * app.post('/upload', upload.single('archivo'), (req, res) => {
+ *     res.send('Archivo subido exitosamente');
+ * });
+ *
+ * @requires multer - Debes tener instalado Multer para manejar las subidas de archivos.
+ */
+
 const almacenamiento = multer.diskStorage({
     destination: (req, file, cb) => {
         cb(null, uploadDir); // ruta donde se enviarán los archivos
@@ -34,6 +54,25 @@ const upload = multer({ storage: almacenamiento });
 
 
 // FUNCION PARA INSERTAR LOS MENUS
+/**
+ * Inserta un nuevo menú en la base de datos.
+ *
+ * Esta función permite la inserción de un menú con su nombre, descripción, precio y la imagen del platillo. 
+ * Utiliza Multer para gestionar la carga de archivos y realiza las validaciones necesarias para asegurarse 
+ * de que solo se acepten imágenes en formato PNG o JPEG.
+ *
+ * @async
+ * @function func_InsertarMenu
+ * @param {Object} req - Objeto de solicitud (Request) de Express.
+ * @param {Object} req.query - Los parámetros de consulta que contienen los detalles del menú.
+ * @param {string} req.query.nombreMenu - El nombre del menú a insertar.
+ * @param {string} req.query.descripcionMenu - La descripción del menú.
+ * @param {number} req.query.precioMenu - El precio del menú.
+ * @param {Object} req.file - Archivo subido que contiene la imagen del platillo.
+ * @param {Object} res - Objeto de respuesta (Response) de Express.
+ * @returns {JSON} Devuelve un objeto JSON que indica el éxito o el error de la operación.
+ * @throws {Error} Devuelve un error si hay problemas con la carga del archivo o la inserción en la base de datos.
+ */
 export const func_InsertarMenu = (req, res) => {
     const { nombreMenu, descripcionMenu, precioMenu } = req.query;
 
@@ -105,6 +144,22 @@ export const func_InsertarMenu = (req, res) => {
 
 
 // FUNCION PARA SELECCIONAR TODOS LOS MENUS
+/**
+ * Selecciona todos los menús de la base de datos.
+ *
+ * Esta función recupera todos los menús disponibles en la base de datos y genera la URL correspondiente 
+ * para la imagen de cada menú, verificando la existencia del archivo en el sistema de archivos. Si la imagen 
+ * existe, se incluye en los datos de respuesta.
+ *
+ * @async
+ * @function func_selecionarTodosLosMenus
+ * @param {Object} req - Objeto de solicitud (Request) de Express.
+ * @param {string} req.protocol - El protocolo utilizado en la solicitud (http o https).
+ * @param {Object} req.headers - Los encabezados de la solicitud, utilizados para construir la URL de la imagen.
+ * @param {Object} res - Objeto de respuesta (Response) de Express.
+ * @returns {JSON} Devuelve un objeto JSON con todos los menús disponibles, incluyendo la URL de la imagen si está disponible.
+ * @throws {Error} Devuelve un error si ocurre un problema durante la consulta o la verificación de la existencia de la imagen.
+ */
 
 export const func_selecionarTodosLosMenus = async (req, res) => {
 
@@ -169,15 +224,28 @@ export const func_selecionarTodosLosMenus = async (req, res) => {
             error: error
         });
     }
-
-
 }
-
-
 // -- FIN FUNCION --
 
 
 // FUNCION PARA ELIMINAR UN MENU CON EL ID
+/**
+ * Elimina un menú de la base de datos y su imagen asociada en el sistema de archivos.
+ *
+ * Esta función recibe el ID del menú a eliminar y la URL de su imagen. Primero, verifica si la imagen 
+ * existe en el sistema de archivos y, si es así, procede a eliminar el menú de la base de datos y su imagen 
+ * del sistema de archivos.
+ *
+ * @async
+ * @function func_EliminarMenu
+ * @param {Object} req - Objeto de solicitud (Request) de Express.
+ * @param {Object} req.body - El cuerpo de la solicitud que contiene los detalles del menú a eliminar.
+ * @param {number} req.body.idMenu - El ID del menú que se desea eliminar.
+ * @param {string} req.body.urlImagenMenu - La URL de la imagen asociada al menú que se va a eliminar.
+ * @param {Object} res - Objeto de respuesta (Response) de Express.
+ * @returns {JSON} Devuelve un objeto JSON que indica el éxito o el error de la operación.
+ * @throws {Error} Devuelve un error si ocurre un problema durante la eliminación del menú o la imagen.
+ */
 
 export const func_EliminarMenu = async (req, res) => {
 
@@ -248,6 +316,26 @@ export const func_EliminarMenu = async (req, res) => {
 
 // FUNCION PARA EDITAR EL MENU
 
+/**
+ * Edita un menú existente en la base de datos, con la opción de actualizar la imagen asociada.
+ *
+ * Esta función permite actualizar los detalles de un menú, como nombre, descripción, precio, y opcionalmente, 
+ * la imagen del platillo. Si se sube una nueva imagen, se actualiza en la base de datos; de lo contrario, solo se 
+ * actualizan los detalles sin cambiar la imagen existente.
+ *
+ * @async
+ * @function func_EditarMenu
+ * @param {Object} req - Objeto de solicitud (Request) de Express.
+ * @param {Object} req.query - Parámetros de consulta que contienen los detalles del menú a actualizar.
+ * @param {string} req.query.nombreMenu - El nuevo nombre del menú.
+ * @param {string} req.query.descripcionMenu - La nueva descripción del menú.
+ * @param {number} req.query.precioMenu - El nuevo precio del menú.
+ * @param {number} req.query.idMenu - El ID del menú que se desea editar.
+ * @param {Object} res - Objeto de respuesta (Response) de Express.
+ * @returns {JSON} Devuelve un objeto JSON que indica el éxito o el error de la operación.
+ * @throws {Error} Devuelve un error si ocurre un problema durante la edición del menú.
+ */
+
 export const func_EditarMenu = (req, res) => {
 
     try {
@@ -303,9 +391,6 @@ export const func_EditarMenu = (req, res) => {
                             error: null
                         });
                     }
-
-
-
                 }
                 else {
 
@@ -360,16 +445,10 @@ export const func_EditarMenu = (req, res) => {
                             error: null
                         });
                     }
-
                 }
-
 
             }
         });
-
-
-
-
 
     } catch (error) {
         res.status(200).send({
