@@ -1,6 +1,7 @@
 import { DataTypes } from "sequelize";
 import sequelize from "./conexion.js";
 
+
 export const tbl_Menu = sequelize.define("Menu", {
     id: {
         type: DataTypes.INTEGER,
@@ -39,6 +40,14 @@ export const tbl_Menu = sequelize.define("Menu", {
 
 
 tbl_Menu.associate = (models) => {
+
+    tbl_Menu.belongsTo(models.categoria, {
+        foreignKey: {
+            allowNull: false,
+        },
+    });
+
+
     tbl_Menu.hasMany(models.tbl_DetallePedidos, {});
 
     return tbl_Menu;

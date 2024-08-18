@@ -1,6 +1,6 @@
 import { DataTypes } from "sequelize";
-
 import sequelize from "./conexion.js";
+
 
 /**
  * Modelo de la tabla Usuario.
@@ -19,60 +19,60 @@ import sequelize from "./conexion.js";
  * @property {boolean} estado - Estado del usuario (activo o inactivo). Por defecto es 1 (activo).
  */
 export const tbl_usuario = sequelize.define(
-    "Usuario",
-    {
-      id: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        primaryKey: true,
-        autoIncrement: true,
-      },
-      cedula: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-      },
-      nombreCompleto: {
-        type: DataTypes.STRING(85),
-        allowNull: false,
-      },
-      telefono: {
-        type: DataTypes.STRING(45),
-        allowNull: true,
-      },
-      correo: {
-        type: DataTypes.STRING(85),
-        allowNull: false,
-      },
-      password: {
-        type: DataTypes.STRING(85),
-        allowNull: false,
-      },
-      RolId: { // Definición del campo RolId
-        type: DataTypes.INTEGER,
-        allowNull: false,
-      },
-      estado:{
-        type:DataTypes.BOOLEAN,
-        allowNull:false,
-        defaultValue:1 //Valor por defecto 1 (activo)
-    }
+  "Usuario",
+  {
+    id: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      primaryKey: true,
+      autoIncrement: true,
     },
-    {
-      timestamps: false, // Desactiva las columnas createdAt y updatedAt
+    cedula: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
+    nombreCompleto: {
+      type: DataTypes.STRING(85),
+      allowNull: false,
+    },
+    telefono: {
+      type: DataTypes.STRING(45),
+      allowNull: true,
+    },
+    correo: {
+      type: DataTypes.STRING(85),
+      allowNull: false,
+    },
+    password: {
+      type: DataTypes.STRING(85),
+      allowNull: false,
+    },
+    RolId: { // Definición del campo RolId
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
+    estado: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: 1 //Valor por defecto 1 (activo)
     }
-  );
+  },
+  {
+    timestamps: false, // Desactiva las columnas createdAt y updatedAt
+  }
+);
 
 
-  /**
- * Define las asociaciones del modelo Usuario.
- * 
- * El modelo Usuario tiene las siguientes asociaciones:
- * - Pertenece a un Rol a través del campo `RolId`.
- * - Tiene muchos Pedidos.
- * 
- * @param {Object} models - Los modelos de Sequelize que se utilizarán para definir las asociaciones.
- * @returns {Object} - El modelo Usuario con las asociaciones definidas.
- */
+/**
+* Define las asociaciones del modelo Usuario.
+* 
+* El modelo Usuario tiene las siguientes asociaciones:
+* - Pertenece a un Rol a través del campo `RolId`.
+* - Tiene muchos Pedidos.
+* 
+* @param {Object} models - Los modelos de Sequelize que se utilizarán para definir las asociaciones.
+* @returns {Object} - El modelo Usuario con las asociaciones definidas.
+*/
 tbl_usuario.associate = (models) => {
   tbl_usuario.belongsTo(models.tbl_Rol, {
     foreignKey: {

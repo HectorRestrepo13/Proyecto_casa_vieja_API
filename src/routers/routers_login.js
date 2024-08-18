@@ -1,6 +1,10 @@
 import { Router } from "express";
 import { check, validationResult } from "express-validator";
-import { func_registrarUsuario, func_iniciarSesion } from "../controllers/login.js";
+import jwt from 'jsonwebtoken'
+import { func_registrarUsuario, func_iniciarSesion, fuc_selecionarRoles } from "../controllers/login.js";
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 // ESTA FUNCION ES LA QUE VA VERIFICAR LOS ERRORES Y VA MADAR UN MENSAJE DE ERROR
 
@@ -9,11 +13,12 @@ const customValidationMiddleware = (req, res, next) => {
 
     // Si hay errores en la validación, personaliza la respuesta
     if (!errors.isEmpty()) {
-        return res.status(400).json({
+        return res.status(200).json({
             status: false,
             descripcion: 'Errores en la validación de los datos',
             datos: null,
-            error: errors.array().map(error => ({
+            error: null,
+            validaciones: errors.array().map(error => ({
                 param: error.param,
                 msg: error.msg,
                 value: error.value
@@ -26,6 +31,9 @@ const customValidationMiddleware = (req, res, next) => {
 };
 
 // -- FIN FUNCION --
+
+
+
 
 let rutaLogin = Router();
 
@@ -50,6 +58,8 @@ rutaLogin.post("/login/iniciarSesion/", [
     check('contra', 'debe ingresar una contraseña').not().isEmpty(),
 ], customValidationMiddleware, func_iniciarSesion)
 
+// RUTA TRAER ROLES
+rutaLogin.get("/seleccionarRoles/", fuc_selecionarRoles)
 
 
 export default rutaLogin;

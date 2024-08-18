@@ -4,7 +4,16 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import { fileURLToPath } from 'url';
 import cookieParser from 'cookie-parser';
-import sequelize from './src/models/conexion.js';
+import sequelize, { models } from './src/models/index.js';
+import './src/models/categoria.js'
+import './src/models/tbl_Cierre.js'
+import './src/models/tbl_DetallePedidos.js'
+import './src/models/tbl_Eventos.js'
+import './src/models/tbl_Menu.js'
+import './src/models/tbl_MenuDelDia.js'
+import './src/models/tbl_Pedido.js'
+import './src/models/tbl_Rol.js'
+import './src/models/tbl_Usuario.js'
 
 // Inicializar dotenv para cargar variables de entorno
 dotenv.config();
@@ -32,12 +41,12 @@ app.use(cors({
         }
     },
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
 }));
 
 app.use(express.json());
 app.use(cookieParser()) // cookie
-app.use(express.urlencoded({ extended: true }));
+
 
 // Importar rutas
 import rutaLogin from './src/routers/routers_login.js';
@@ -62,34 +71,6 @@ const __dirname = path.dirname(__filename);
 // Servir archivos estáticos desde la carpeta "public/uploads"
 app.use('/uploads', express.static(path.join(__dirname, './public/uploads')));
 
-// Importar modelos y establecer asociaciones
-import { tbl_usuario } from './src/models/tbl_Usuario.js';
-import { tbl_Rol } from './src/models/tbl_Rol.js';
-import { tbl_Pedido } from './src/models/tbl_Pedido.js';
-import { tbl_DetallePedidos } from './src/models/tbl_DetallePedidos.js';
-import { tbl_Menu } from './src/models/tbl_Menu.js';
-import { tbl_MenuDelDia } from './src/models/tbl_MenuDelDia.js';
-import { tbl_Cierre } from './src/models/tbl_Cierre.js';
-import { tbl_Eventos } from './src/models/tbl_Eventos.js';
-
-// Objeto de modelos
-const models = {
-    tbl_usuario,
-    tbl_Rol,
-    tbl_Pedido,
-    tbl_DetallePedidos,
-    tbl_Menu,
-    tbl_MenuDelDia,
-    tbl_Cierre,
-    tbl_Eventos,
-};
-
-// Establecer asociaciones entre modelos
-Object.keys(models).forEach(modelName => {
-    if ('associate' in models[modelName]) {
-        models[modelName].associate(models);
-    }
-});
 
 // Sincronizar con la base de datos
 sequelize.sync({ force: false })

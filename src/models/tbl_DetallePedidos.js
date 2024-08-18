@@ -1,12 +1,13 @@
 import { DataTypes } from "sequelize";
 import sequelize from "./conexion.js";
 
+
 export const tbl_DetallePedidos = sequelize.define("DetallePedidos", {
     id: {
         type: DataTypes.INTEGER,
         allowNull: false,
-        primaryKey: true, 
-        autoIncrement: true 
+        primaryKey: true,
+        autoIncrement: true
     },
     cantidad: {
         type: DataTypes.INTEGER,
@@ -17,7 +18,7 @@ export const tbl_DetallePedidos = sequelize.define("DetallePedidos", {
         allowNull: false
     }
 }, {
-    timestamps: false 
+    timestamps: false
 });
 
 tbl_DetallePedidos.associate = (models) => {

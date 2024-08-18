@@ -27,3 +27,20 @@ tbl_Rol.associate = (models) => {
 
     return tbl_Rol;
 };
+
+
+// Hook para agregar datos iniciales después de sincronizar
+tbl_Rol.afterSync(async () => {
+    const tbl_RolsIniciales = [
+        { descripcion: "ADMIN" },
+        { descripcion: "CAJERO" },
+        { descripcion: "MESERO" },
+
+    ];
+
+    //findOrCreate: Intenta encontrar una fila con la descripción especificada. Si no la encuentra, la crea.
+
+    for (const cat of tbl_RolsIniciales) {
+        await tbl_Rol.findOrCreate({ where: { descripcion: cat.descripcion } });
+    }
+});

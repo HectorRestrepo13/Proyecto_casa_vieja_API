@@ -1,6 +1,6 @@
 import { DataTypes } from "sequelize";
-
 import sequelize from "./conexion.js";
+
 
 export const tbl_Pedido = sequelize.define("Pedidos", {
     id: {
