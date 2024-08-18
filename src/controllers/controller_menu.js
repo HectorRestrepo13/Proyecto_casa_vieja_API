@@ -53,7 +53,6 @@ const upload = multer({ storage: almacenamiento });
 
 
 
-
 // FUNCION PARA INSERTAR LOS MENUS
 /**
  * Inserta un nuevo menú en la base de datos.
@@ -75,7 +74,7 @@ const upload = multer({ storage: almacenamiento });
  * @throws {Error} Devuelve un error si hay problemas con la carga del archivo o la inserción en la base de datos.
  */
 export const func_InsertarMenu = (req, res) => {
-    const { nombreMenu, descripcionMenu, precioMenu } = req.body;
+
 
     try {
         // Llamar al middleware de Multer directamente
@@ -101,33 +100,50 @@ export const func_InsertarMenu = (req, res) => {
                     });
                 }
                 console.log("ACA voy a mirar el Archivo :" + req.file);
+                const { nombreMenu, descripcionMenu, precioMenu, CategoriumId } = req.body;
 
-                // Verificar que sea imagen
-                let archivo = req.file.mimetype.split("/");
-                let type = archivo[1];
-                if (type.toUpperCase() === "JPEG" || type.toUpperCase() === "PNG") {
-                    const insertacionMenu = await tbl_Menu.create({
-                        nombre: nombreMenu,
-                        descripcion: descripcionMenu,
-                        precio: precioMenu,
-                        imagen: req.file.filename
-                    });
-                    // Todo salió bien, enviamos la respuesta exitosa
-                    res.status(200).send({
-                        status: true,
-                        descripcion: "Menú insertado con éxito",
-                        datos: insertacionMenu,
-                        error: null
-                    });
-                } else {
+                if (nombreMenu != "" && descripcionMenu != "" && precioMenu != "" && CategoriumId != "") {
+
+                    // Verificar que sea imagen
+                    let archivo = req.file.mimetype.split("/");
+                    let type = archivo[1];
+                    if (type.toUpperCase() === "JPEG" || type.toUpperCase() === "PNG") {
+                        const insertacionMenu = await tbl_Menu.create({
+                            nombre: nombreMenu,
+                            descripcion: descripcionMenu,
+                            precio: precioMenu,
+                            imagen: req.file.filename,
+                            CategoriumId: CategoriumId
+                        });
+                        // Todo salió bien, enviamos la respuesta exitosa
+                        res.status(200).send({
+                            status: true,
+                            descripcion: "Menú insertado con éxito",
+                            datos: insertacionMenu,
+                            error: null
+                        });
+                    } else {
+                        fs.unlinkSync(req.file.path);
+                        console.log("Archivo eliminado correctamente");
+                        res.status(200).send({
+                            status: false,
+                            descripcion: "Solo se aceptan imágenes en formato PNG o JPEG",
+                            error: null
+                        });
+                    }
+                }
+                else {
                     fs.unlinkSync(req.file.path);
-                    console.log("Archivo eliminado correctamente");
                     res.status(200).send({
                         status: false,
-                        descripcion: "Solo se aceptan imágenes en formato PNG o JPEG",
-                        error: null
+                        descripcion: "Se estan Enviando Datos Nulos",
+                        datos: null,
+                        error: "Se estan Enviando Datos Nulos"
                     });
+
                 }
+
+
             }
         });
     } catch (error) {
@@ -259,9 +275,9 @@ export const func_selecionarMenuEspecificoCategoria = async (req, res) => {
         let ArregloDatosMenu = new Array();
 
         const traerMenus = await tbl_Menu.findAll({
-            // where: { 
-
-            //  }
+            where: {
+                CategoriumId: idCategoria
+            }
         });
 
         // recorro los datos que me trae para coger el nombre de la imagen para poder enviar la URL de la imagen

@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { func_InsertarMenu, func_selecionarTodosLosMenus, func_EliminarMenu, func_EditarMenu } from "../controllers/controller_menu.js";
+import { func_InsertarMenu, func_selecionarTodosLosMenus, func_EliminarMenu, func_EditarMenu, func_selecionarMenuEspecificoCategoria } from "../controllers/controller_menu.js";
 import { check, validationResult } from "express-validator";
 import jwt from 'jsonwebtoken'
 import dotenv from 'dotenv'
@@ -44,6 +44,7 @@ const verificarToken = (req, res, next) => {
 // FUNCION PARA VALIDAR LOS DATOS EXPRESS VALIDATOR
 
 const customValidationMiddleware = (req, res, next) => {
+
     const errors = validationResult(req);
 
     // Si hay errores en la validación, personaliza la respuesta
@@ -65,17 +66,13 @@ const customValidationMiddleware = (req, res, next) => {
 };
 
 // RUTA INSERTAR MENU
-rutaMenu.post("/menu/InsertarMenu/",
-    [
-        check('nombreMenu', 'Ingresa el Nombre del Menu').not().isEmpty(),
-        check('descripcionMenu', 'Ingresa una descripcion del Menu').not().isEmpty(),
-        check('precioMenu', 'Ingresa el Precio del Menu').not().isEmpty(),
-
-
-    ], customValidationMiddleware, verificarToken, func_InsertarMenu);
+rutaMenu.post("/menu/InsertarMenu/", verificarToken, func_InsertarMenu);
 
 // RUTA SELECIONAR TODOS LOS MENUS
 rutaMenu.get("/menu/selecionarTodosLosMenus/", verificarToken, func_selecionarTodosLosMenus);
+
+// RUTA SELECIONAR TODOS LOS MENUS
+rutaMenu.get("/menu/selecionarMenuEspecificoCategoria/", verificarToken, func_selecionarMenuEspecificoCategoria);
 
 // RUTA ELIMINAR MENU
 rutaMenu.delete("/menu/EliminarMenu/",
