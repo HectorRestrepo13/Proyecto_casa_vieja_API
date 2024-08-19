@@ -72,7 +72,7 @@ rutaMenu.post("/menu/InsertarMenu/", verificarToken, func_InsertarMenu);
 rutaMenu.get("/menu/selecionarTodosLosMenus/", verificarToken, func_selecionarTodosLosMenus);
 
 // RUTA SELECIONAR TODOS LOS MENUS
-rutaMenu.get("/menu/selecionarMenuEspecificoCategoria/", verificarToken, func_selecionarMenuEspecificoCategoria);
+rutaMenu.post("/menu/selecionarMenuEspecificoCategoria/", verificarToken, func_selecionarMenuEspecificoCategoria);
 
 // RUTA ELIMINAR MENU
 rutaMenu.delete("/menu/EliminarMenu/",

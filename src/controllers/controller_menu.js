@@ -184,7 +184,11 @@ export const func_selecionarTodosLosMenus = async (req, res) => {
         var urlImagenMenu = null;
         let ArregloDatosMenu = new Array();
 
-        const traerMenus = await tbl_Menu.findAll({});
+        const traerMenus = await tbl_Menu.findAll({
+            include: [{
+                model: categoria, // El modelo de la tabla relacionada
+            }]
+        });
 
         // recorro los datos que me trae para coger el nombre de la imagen para poder enviar la URL de la imagen
 
@@ -217,7 +221,8 @@ export const func_selecionarTodosLosMenus = async (req, res) => {
                 descripcion: menu.descripcion,
                 precio: menu.precio,
                 estado: menu.estado,
-                UrlImagen: urlImagenMenu
+                UrlImagen: urlImagenMenu,
+                categoria: menu.Categorium.descripcion
 
             }
 
@@ -277,7 +282,10 @@ export const func_selecionarMenuEspecificoCategoria = async (req, res) => {
         const traerMenus = await tbl_Menu.findAll({
             where: {
                 CategoriumId: idCategoria
-            }
+            },
+            include: [{
+                model: categoria, // El modelo de la tabla relacionada
+            }]
         });
 
         // recorro los datos que me trae para coger el nombre de la imagen para poder enviar la URL de la imagen
@@ -311,7 +319,9 @@ export const func_selecionarMenuEspecificoCategoria = async (req, res) => {
                 descripcion: menu.descripcion,
                 precio: menu.precio,
                 estado: menu.estado,
-                UrlImagen: urlImagenMenu
+                UrlImagen: urlImagenMenu,
+                categoria: menu.Categorium.descripcion
+
 
             }
 
