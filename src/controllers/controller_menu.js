@@ -638,6 +638,8 @@ export const seleccionarCategorias = async (req, res) => {
 // -- FIN FUNCION --
 
 
+// FUNCION PARA ANULAR EL ITEM DEL MENU
+
 export const anularItemMenu = async (req, res) => {
 
     const { idMenu, nuevoEstado } = req.body;
@@ -685,3 +687,97 @@ export const anularItemMenu = async (req, res) => {
 
 
 }
+
+// -- FIN FUNCION --
+
+// FUNCION PARA SELECCIONAR EL ITEM DEL MENU POR NOMBRE DEL MENU
+
+export const seleccionarMenuPorNombre = async (req, res) => {
+
+    let nombreMenu = req.params.nombreMenu;
+
+    try {
+
+
+
+        var urlImagenMenu = null;
+        let ArregloDatosMenu = new Array();
+
+        const resultadosMenu = await tbl_Menu.findAll({
+            include: [{
+                model: categoria, // El modelo de la tabla relacionada
+            }],
+            where: {
+                nombre: {
+                    [Op.like]: `%${nombreMenu}%`
+                },
+                estado: {
+                    [Op.eq]: 'activo'  // Selecciona registros donde 'estado' contiene la palabra 'activo'
+                }
+            }
+        });
+
+        // recorro los datos que me trae para coger el nombre de la imagen para poder enviar la URL de la imagen
+
+        resultadosMenu.map((menu) => {
+
+            // obtengo la ruta Absoluta de la imagen 
+            let RutaImagenMenu = path.resolve(__dirname, `../../public/uploads/imagenesMenu/${menu.imagen}`)
+            console.log(" la ruta absoluta " + RutaImagenMenu)
+            // compruebo de que la imagen exista en esa ruta 
+            // creo una promesa para poder verificar ya que el "fs.access" es asincronico
+            let verificacionEXistencia = new Promise((resolve, reject) => {
+                fs.access(RutaImagenMenu, fs.constants.F_OK, (error) => {
+                    if (error) {
+                        reject(false);
+                    } else {
+                        resolve(true);
+                    }
+                });
+            })
+
+            if (verificacionEXistencia) {
+                // Generación de URL
+                urlImagenMenu = `${req.protocol}://${req.get('host')}/uploads/imagenesMenu/${menu.imagen}`;
+
+            }
+
+            let datosMenu = {
+                id: menu.id,
+                nombre: menu.nombre,
+                descripcion: menu.descripcion,
+                precio: menu.precio,
+                estado: menu.estado,
+                UrlImagen: urlImagenMenu,
+                categoria: menu.Categorium.descripcion,
+                idCategoria: menu.Categorium.id
+
+
+            }
+
+            ArregloDatosMenu.push(datosMenu)
+        })
+
+
+        res.status(200).send({
+            status: true,
+            descripcion: "Todos los Menus Selecionados con exito",
+            datos: ArregloDatosMenu,
+            error: null
+        });
+
+
+
+    } catch (error) {
+        res.status(200).send({
+            status: false,
+            descripcion: "Hubo un error en la API al Seleccionar el Menu",
+            datos: null,
+            error: error
+        });
+    }
+
+
+}
+
+// -- FIN FUNCION --

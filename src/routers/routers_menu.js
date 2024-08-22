@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { func_InsertarMenu, func_selecionarTodosLosMenus, func_EliminarMenu, func_EditarMenu, func_selecionarMenuEspecificoCategoria, seleccionarCategorias, anularItemMenu } from "../controllers/controller_menu.js";
+import { func_InsertarMenu, func_selecionarTodosLosMenus, func_EliminarMenu, func_EditarMenu, func_selecionarMenuEspecificoCategoria, seleccionarCategorias, anularItemMenu, seleccionarMenuPorNombre } from "../controllers/controller_menu.js";
 import { check, validationResult } from "express-validator";
 import jwt from 'jsonwebtoken'
 import dotenv from 'dotenv'
@@ -105,4 +105,9 @@ rutaMenu.put("/anularItemMenu/",
 
 
     ], customValidationMiddleware, verificarToken, anularItemMenu)
+
+
+// RUTA PARA SELECCIONAR MENU POR NOMBRE
+rutaMenu.get("/seleccionarMenuPorNombre/:nombreMenu", verificarToken, seleccionarMenuPorNombre)
+
 export default rutaMenu;
