@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { func_InsertarMenu, func_selecionarTodosLosMenus, func_EliminarMenu, func_EditarMenu, func_selecionarMenuEspecificoCategoria } from "../controllers/controller_menu.js";
+import { func_InsertarMenu, func_selecionarTodosLosMenus, func_EliminarMenu, func_EditarMenu, func_selecionarMenuEspecificoCategoria, seleccionarCategorias, anularItemMenu } from "../controllers/controller_menu.js";
 import { check, validationResult } from "express-validator";
 import jwt from 'jsonwebtoken'
 import dotenv from 'dotenv'
@@ -69,7 +69,7 @@ const customValidationMiddleware = (req, res, next) => {
 rutaMenu.post("/menu/InsertarMenu/", verificarToken, func_InsertarMenu);
 
 // RUTA SELECIONAR TODOS LOS MENUS
-rutaMenu.get("/menu/selecionarTodosLosMenus/", verificarToken, func_selecionarTodosLosMenus);
+rutaMenu.get("/menu/selecionarTodosLosMenus/:estadoMenu", verificarToken, func_selecionarTodosLosMenus);
 
 // RUTA SELECIONAR TODOS LOS MENUS
 rutaMenu.post("/menu/selecionarMenuEspecificoCategoria/", verificarToken, func_selecionarMenuEspecificoCategoria);
@@ -93,4 +93,16 @@ rutaMenu.put("/menu/EditarMenu/",
     ], customValidationMiddleware, verificarToken, func_EditarMenu);
 
 
+
+
+// RUTA PARA SELECCIONAR CATEGORIAS
+rutaMenu.get("/menu/seleccionarCategoriasMenu/", seleccionarCategorias)
+
+// RUTA PARA ANULAR ITEM DEL MENU
+rutaMenu.put("/anularItemMenu/",
+    [
+        check('idMenu', 'Ingrese el Id del Menu').not().isEmpty(),
+
+
+    ], customValidationMiddleware, verificarToken, anularItemMenu)
 export default rutaMenu;

@@ -4,6 +4,7 @@ import fs from 'fs'; // para manejar archivos locales
 import path from "path"; // investigar PARA MANIPULAR RUTAS DEL ARCHIVO
 import multer from "multer"; // para subir archivos
 import { fileURLToPath } from "url";
+import { Op } from "sequelize";
 
 // Obtén la ruta del archivo actual y el directorio actual
 const __filename = fileURLToPath(import.meta.url);
@@ -180,6 +181,8 @@ export const func_InsertarMenu = (req, res) => {
 
 export const func_selecionarTodosLosMenus = async (req, res) => {
 
+    let estadoMenu = req.params.estadoMenu;
+
     try {
         var urlImagenMenu = null;
         let ArregloDatosMenu = new Array();
@@ -187,7 +190,12 @@ export const func_selecionarTodosLosMenus = async (req, res) => {
         const traerMenus = await tbl_Menu.findAll({
             include: [{
                 model: categoria, // El modelo de la tabla relacionada
-            }]
+            }],
+            where: {
+                estado: {
+                    [Op.eq]: estadoMenu  // Selecciona registros donde 'nombre' contiene la palabra 'activo'
+                }
+            },
         });
 
         // recorro los datos que me trae para coger el nombre de la imagen para poder enviar la URL de la imagen
@@ -222,7 +230,8 @@ export const func_selecionarTodosLosMenus = async (req, res) => {
                 precio: menu.precio,
                 estado: menu.estado,
                 UrlImagen: urlImagenMenu,
-                categoria: menu.Categorium.descripcion
+                categoria: menu.Categorium.descripcion,
+                idCategoria: menu.Categorium.id
 
             }
 
@@ -275,13 +284,17 @@ export const func_selecionarMenuEspecificoCategoria = async (req, res) => {
 
     let { idCategoria } = req.body
 
+
     try {
         var urlImagenMenu = null;
         let ArregloDatosMenu = new Array();
 
         const traerMenus = await tbl_Menu.findAll({
             where: {
-                CategoriumId: idCategoria
+                CategoriumId: idCategoria,
+                estado: {
+                    [Op.eq]: 'activo'  // Selecciona registros donde 'estado' contiene la palabra 'activo'
+                }
             },
             include: [{
                 model: categoria, // El modelo de la tabla relacionada
@@ -320,7 +333,8 @@ export const func_selecionarMenuEspecificoCategoria = async (req, res) => {
                 precio: menu.precio,
                 estado: menu.estado,
                 UrlImagen: urlImagenMenu,
-                categoria: menu.Categorium.descripcion
+                categoria: menu.Categorium.descripcion,
+                idCategoria: menu.Categorium.id
 
 
             }
@@ -468,7 +482,7 @@ export const func_EditarMenu = (req, res) => {
 
     try {
 
-        const { nombreMenu, descripcionMenu, precioMenu, idMenu } = req.query;
+        const { nombreMenu, descripcionMenu, precioMenu, idMenu, idCategoria } = req.query;
 
         // Llamar al middleware de Multer directamente
         upload.single('imagenPlatillo')(req, res, async function (err) {
@@ -496,6 +510,7 @@ export const func_EditarMenu = (req, res) => {
                         nombre: nombreMenu,
                         descripcion: descripcionMenu,
                         precio: precioMenu,
+                        CategoriumId: idCategoria
                     },
                         {
                             where: { id: idMenu }
@@ -534,7 +549,8 @@ export const func_EditarMenu = (req, res) => {
                             nombre: nombreMenu,
                             descripcion: descripcionMenu,
                             precio: precioMenu,
-                            imagen: req.file.filename
+                            imagen: req.file.filename,
+                            CategoriumId: idCategoria
                         },
                             {
                                 where: { id: idMenu }
@@ -590,3 +606,82 @@ export const func_EditarMenu = (req, res) => {
 }
 
 // -- FIN FUNCION --
+
+// FUNCION PARA SELECCIONAR LAS CATEGORIAS
+
+export const seleccionarCategorias = async (req, res) => {
+
+
+    try {
+
+        const traerCategorias = await categoria.findAll({});
+
+        res.status(200).send({
+            status: true,
+            descripcion: "Exito al Seleccionar las Categorias",
+            datos: traerCategorias,
+            error: null
+        });
+
+
+    } catch (error) {
+        res.status(200).send({
+            status: false,
+            descripcion: "Hubo un error en la API al Seleccionar las Categorias",
+            datos: null,
+            error: error
+        });
+    }
+
+}
+
+// -- FIN FUNCION --
+
+
+export const anularItemMenu = async (req, res) => {
+
+    const { idMenu, nuevoEstado } = req.body;
+
+    try {
+
+        const [result] = await tbl_Menu.update(
+            { estado: nuevoEstado }, // Campos a actualizar
+            {
+                where: {
+                    id: idMenu,
+                },
+            }
+        );
+
+        if (result > 0) {
+            res.status(200).send({
+                status: true,
+                descripcion: "Item Anulado con Exito",
+                datos: result,
+                error: null
+            });
+        }
+        else {
+            res.status(200).send({
+                status: false,
+                descripcion: "Ese Menu no Existe",
+                datos: result,
+                error: null
+            });
+        }
+
+
+
+
+    } catch (error) {
+        res.status(200).send({
+            status: false,
+            descripcion: "Hubo un error en la API al Anular  el Item del Menu",
+            datos: null,
+            error: error
+        });
+    }
+
+
+
+}
