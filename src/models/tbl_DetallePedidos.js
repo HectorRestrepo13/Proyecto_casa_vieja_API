@@ -16,7 +16,12 @@ export const tbl_DetallePedidos = sequelize.define("DetallePedidos", {
     valorUnidad: {
         type: DataTypes.BIGINT,
         allowNull: false
-    }
+    },
+    descripcion: {
+        type: DataTypes.STRING(300),
+        allowNull: true
+    },
+
 }, {
     timestamps: false
 });
@@ -32,11 +37,7 @@ tbl_DetallePedidos.associate = (models) => {
             allowNull: true,
         },
     });
-    tbl_DetallePedidos.belongsTo(models.tbl_MenuDelDia, {
-        foreignKey: {
-            allowNull: true,
-        },
-    });
+
 
     return tbl_DetallePedidos;
 };

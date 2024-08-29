@@ -35,6 +35,8 @@ tbl_Rol.afterSync(async () => {
         { descripcion: "ADMIN" },
         { descripcion: "CAJERO" },
         { descripcion: "MESERO" },
+        { descripcion: "RECEPCIONISTA" },
+
 
     ];
 

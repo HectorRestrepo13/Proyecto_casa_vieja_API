@@ -83,10 +83,6 @@ rutaUsuario.put("/editarUsuario/:identificacion", [
     check('nombreCompleto', 'Ingresa el Nombre Completo').not().isEmpty(),
     check('telefono', 'Ingresa el numero de Telefono').not().isEmpty(),
     check('correo', 'Ingresa Un Correo').not().isEmpty(),
-    check('paswordUsuario')
-        .isLength({ min: 6 }).withMessage('La contraseña debe tener al menos 6 caracteres.')
-        .matches(/[^a-zA-Z0-9]/).withMessage('La contraseña debe contener al menos un carácter especial.'),
-
     check('rolId', 'Ingresa el ID del Usuario').not().isEmpty(),
 ], customValidationMiddleware, verificarToken, EditarUsuario)
 
@@ -97,7 +93,7 @@ rutaUsuario.put("/cambiarEstado/:identificacion", [
 
 ], customValidationMiddleware, verificarToken, CambiarEstadoUsuario)
 
-rutaUsuario.get("/traerTodos", verificarToken, TraerTodosUsuarios)
+rutaUsuario.get("/traerTodos/:estadoUsuario", TraerTodosUsuarios)
 
 rutaUsuario.get("/traerUsuarioId/:identificacion", [
     check('identificacion', 'Ingresa la Identificacion').not().isEmpty(),

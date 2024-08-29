@@ -105,7 +105,6 @@ export const EditarUsuario = async (req, res) => {
     !nombreCompleto ||
     !telefono ||
     !correo ||
-    !password ||
     !rolId ||
     !identificacion
   ) {
@@ -127,27 +126,57 @@ export const EditarUsuario = async (req, res) => {
       });
     }
 
-    // Encriptar la contraseña con una sal única
-    const hashedPassword = bcrypt.hashSync(password, 10);
+    if (password != "") {
 
-    // Actualizar el usuario
-    await tbl_usuario.update(
-      {
-        nombreCompleto,
-        telefono,
-        correo,
-        password: hashedPassword,
-        rolId: rolId, // Asegúrate de que el nombre de la columna coincida
-      },
-      {
-        where: { cedula: identificacion }, // Asegúrate de que la columna de búsqueda sea correcta
-      }
-    );
+      // Encriptar la contraseña con una sal única
+      const hashedPassword = bcrypt.hashSync(password, 10);
 
-    res.status(200).json({
-      status: "success",
-      message: "Se editó el usuario con éxito",
-    });
+      // Actualizar el usuario
+      await tbl_usuario.update(
+        {
+          nombreCompleto,
+          telefono,
+          correo,
+          password: hashedPassword,
+          RolId: rolId, // Asegúrate de que el nombre de la columna coincida
+        },
+        {
+          where: { cedula: identificacion }, // Asegúrate de que la columna de búsqueda sea correcta
+        }
+      );
+
+      res.status(200).json({
+        status: "success",
+        message: "Se editó el usuario con éxito",
+      });
+
+
+
+    }
+    else {
+
+
+      // Actualizar el usuario
+      await tbl_usuario.update(
+        {
+          nombreCompleto,
+          telefono,
+          correo,
+          RolId: rolId, // Asegúrate de que el nombre de la columna coincida
+        },
+        {
+          where: { cedula: identificacion }, // Asegúrate de que la columna de búsqueda sea correcta
+        }
+      );
+
+      res.status(200).json({
+        status: "success",
+        message: "Se editó el usuario con éxito",
+      });
+
+    }
+
+
   } catch (error) {
     res.status(500).json({
       status: "error",
@@ -227,28 +256,41 @@ export const CambiarEstadoUsuario = async (req, res) => {
  * @returns {JSON} Devuelve un objeto JSON con el estado de la operación y los datos de los usuarios si se encuentran, o un mensaje de error si no hay usuarios o ocurre un problema.
  * @throws {Object} Devuelve un objeto JSON con un mensaje de error en caso de fallo en la recuperación de datos.
  */
-export const TraerTodosUsuarios = async (req, res)=>{
-   
-try {
-    const traerTodos = await tbl_usuario.findAll();
-    if(traerTodos.length>0){
-        res.status(200).json({
-            status:"success",
-            message:traerTodos
-        });
-    }else{
-        res.status(400).json({
-            status:"error",
-            message:"No se encuentran usuarios en la base de datos"
-        });
-    };
-} catch (error) {
-    res.status(500).json({
-        status:"error",
-        message:"error del servidor",
-        error:error.message
+export const TraerTodosUsuarios = async (req, res) => {
+
+  const estadoUsuario = req.params.estadoUsuario
+
+  try {
+    const traerTodos = await tbl_usuario.findAll({
+      where: {
+        estado: estadoUsuario
+      },
+      include: [{
+        model: tbl_Rol,
+        required: true, // Esto asegura que solo se devuelvan los pedidos que tienen un detalle asociado (INNER JOIN)
+
+      },
+
+      ]
     });
-}
+    if (traerTodos.length > 0) {
+      res.status(200).json({
+        status: "success",
+        message: traerTodos
+      });
+    } else {
+      res.status(200).json({
+        status: "error",
+        message: "No se encuentran usuarios en la base de datos"
+      });
+    };
+  } catch (error) {
+    res.status(500).json({
+      status: "error",
+      message: "error del servidor",
+      error: error.message
+    });
+  }
 };
 
 
@@ -265,35 +307,35 @@ try {
  * @throws {Object} Devuelve un objeto JSON con un mensaje de error en caso de que la identificación no se proporcione o de un fallo en la búsqueda del usuario.
  */
 export const TraerUsuarioId = async (req, res) => {
-    const { identificacion } = req.params;
-  
-    if (!identificacion) {
-      return res.status(400).json({
+  const { identificacion } = req.params;
+
+  if (!identificacion) {
+    return res.status(400).json({
+      status: "error",
+      message: "Debes proporcionar una identificación",
+    });
+  }
+
+  try {
+    // Buscar el usuario por identificación
+    const usuario = await tbl_usuario.findOne({ where: { cedula: identificacion } });
+
+    if (!usuario) {
+      return res.status(404).json({
         status: "error",
-        message: "Debes proporcionar una identificación",
+        message: "Usuario no encontrado",
       });
     }
-  
-    try {
-      // Buscar el usuario por identificación
-      const usuario = await tbl_usuario.findOne({ where: { cedula: identificacion } });
-  
-      if (!usuario) {
-        return res.status(404).json({
-          status: "error",
-          message: "Usuario no encontrado",
-        });
-      }
-  
-      res.status(200).json({
-        status: "success",
-        data: usuario,
-      });
-    } catch (error) {
-      res.status(500).json({
-        status: "error",
-        message: "Error en el servidor",
-        error: error.message,
-      });
-    }
-  };
+
+    res.status(200).json({
+      status: "success",
+      data: usuario,
+    });
+  } catch (error) {
+    res.status(500).json({
+      status: "error",
+      message: "Error en el servidor",
+      error: error.message,
+    });
+  }
+};

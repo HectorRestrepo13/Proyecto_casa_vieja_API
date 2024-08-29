@@ -39,6 +39,7 @@ categoria.afterSync(async () => {
         { descripcion: "Licores" },
         { descripcion: "Bebidas" },
         { descripcion: "Infantil" },
+        { descripcion: "Menu del Dia" },
 
 
     ];

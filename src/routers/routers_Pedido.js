@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { func_InsertarPedido, func_EditarPedido } from "../controllers/controller_Pedido.js";
+import { func_InsertarPedido, func_EditarPedido, seleccionarPedidos, editarMetodoPago } from "../controllers/controller_Pedido.js";
 import { check, validationResult } from "express-validator";
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
@@ -80,5 +80,18 @@ rutaPedido.put("/editarPedido/", [
     check("idPedido", "Ingresa el ID del Pedido para poder Editar").not().isEmpty()
 
 ], customValidationMiddleware, verificarToken, func_EditarPedido)
+
+
+
+// RUTA SELECCIONAR PEDIDOS CON LA FECHA ACTUAL
+rutaPedido.get("/pedidosConFechaActual/", seleccionarPedidos)
+
+
+// RUTA EDITAR METODO PAGO
+rutaPedido.put("/editarMetodoPago/", [
+    check("nuevoMetodoPago", "Ingrese el Nuevo Metodo Pago del Pedido").not().isEmpty(),
+    check("idPedido", "Ingresa el ID del Pedido para poder Editar").not().isEmpty()
+
+], customValidationMiddleware, verificarToken, editarMetodoPago)
 
 export default rutaPedido;
