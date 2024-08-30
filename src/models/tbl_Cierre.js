@@ -31,6 +31,15 @@ export const tbl_Cierre = sequelize.define("Cierre", {
         type: DataTypes.BIGINT,
         allowNull: false
     },
+    valorTotalPlatosVendidos: {
+        type: DataTypes.BIGINT,
+        allowNull: false
+    },
+    valorTotalEvento: {
+        type: DataTypes.BIGINT,
+        allowNull: false
+    },
+
     fecha: {
         type: DataTypes.DATE,
         allowNull: false

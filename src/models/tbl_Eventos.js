@@ -44,6 +44,10 @@ export const tbl_Eventos = sequelize.define("Eventos", {
         type: DataTypes.BIGINT,
         allowNull: false
     },
+    valorEvento: {
+        type: DataTypes.BIGINT,
+        allowNull: false
+    },
     fecha: {
         type: DataTypes.DATE,
         allowNull: false
@@ -53,9 +57,9 @@ export const tbl_Eventos = sequelize.define("Eventos", {
         allowNull: true
     },
     estado: {
-        type: DataTypes.BOOLEAN,
+        type: DataTypes.STRING,
         allowNull: false,
-        defaultValue: 1
+        defaultValue: "Pendiente"
     },
     // Datos básicos de la persona que va a reservar
     nombreReservante: {
