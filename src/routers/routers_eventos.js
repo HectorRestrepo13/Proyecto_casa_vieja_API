@@ -69,7 +69,6 @@ const customValidationMiddleware = (req, res, next) => {
 rutaEvento.post("/crearEvento", [
     check('nombrePersona', 'Ingrese el nombre de la Persona').not().isEmpty(),
     check('cantidadPersonas', 'Ingrese la Cantidad de Personas').not().isEmpty(),
-    check('abono', 'Ingrese la Cantidad de Abono').not().isEmpty(),
     check('nombreEvento', 'Ingrese el Nombre del Evento').not().isEmpty(),
     check('fechaInicio', 'Ingrese la Fecha de Inicio del Evento').not().isEmpty(),
     check('fechaFin', 'Ingrese la Fecha Fin del Evento').not().isEmpty(),
