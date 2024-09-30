@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "test": "api,node,casaVieja,restaurante",
-    "start": "nodemon index.js",
+    "start": "node index.js",
     "docs": "jsdoc -c jsdoc.json"
   },
   "author": "Hector Restrepo - Jhon Narvaes",
