@@ -48,7 +48,11 @@ export const tbl_Eventos = sequelize.define("Eventos", {
         type: DataTypes.BIGINT,
         allowNull: false
     },
-    fecha: {
+    fechaInicio: {
+        type: DataTypes.DATE,
+        allowNull: false
+    },
+    fechaFin: {
         type: DataTypes.DATE,
         allowNull: false
     },

@@ -278,3 +278,55 @@ export const editarMetodoPago = async (req, res) => {
 }
 
 // - FIN FUNCION --
+
+
+// FUNCION PARA SELECCIONAR LOS PEDIDOS CON LOS DETALLEPEDIDO PARA MOSTRAR EN PANTALLA DE LA COCINA 
+
+export const seleccionarPedidosEnPreparacion = async (req, res) => {
+
+    try {
+
+        let consulta = await tbl_Pedido.findAll({
+
+            include: [{
+
+                model: tbl_DetallePedidos,
+                include: [{
+                    model: tbl_Menu,
+                }]
+
+            }],
+            where: {
+                estado: "Preparacion"
+            }
+        })
+
+
+
+
+        res.json({
+            status: true,
+            descripcion: "Seleccionado con Exito",
+            datos: consulta,
+            error: null
+        });
+
+
+
+
+
+    } catch (error) {
+        res.json({
+            status: false,
+            descripcion: "Hubo un error en la API al Seleccionar los Pedidos en Preparacion..",
+            datos: null,
+            error: error.message
+        });
+    }
+
+
+
+
+}
+
+// -- FIN FUNCION --

@@ -26,15 +26,18 @@ export const crearEvento = async (req, res) => {
         nombrePersona,
         cantidadPersonas,
         abono,
-        fecha,
         descripcion,
         nombreReservante,
         telefonoReservante,
-        emailReservante
+        emailReservante,
+        fechaInicio,
+        fechaFin,
+        estado,
+        valorEvento
     } = req.body;
-
+    console.log(req.body)
     // Validar que todos los campos obligatorios estén presentes
-    if (!nombreEvento || !nombrePersona || !cantidadPersonas || !abono || !fecha || !nombreReservante || !telefonoReservante) {
+    if (!nombreEvento || !nombrePersona || !cantidadPersonas || !abono || !fechaInicio || !nombreReservante || !telefonoReservante) {
         return res.status(400).json({
             status: "error",
             message: "Debe de ingresar todos los campos obligatorios correctamente"
@@ -48,11 +51,15 @@ export const crearEvento = async (req, res) => {
             nombrePersona,
             cantidadPersonas,
             abono,
-            fecha,
+            valorEvento,
+            fechaInicio,
+            fechaFin,
             descripcion, // este campo es opcional
+            estado,
             nombreReservante,
             telefonoReservante,
-            emailReservante // este campo es opcional
+            emailReservante,// este campo es opcional
+
         });
 
         // Responder con éxito y enviar el evento creado
@@ -97,9 +104,9 @@ export const crearEvento = async (req, res) => {
  */
 export const editarEvento = async (req, res) => {
     const { id } = req.params;
-    const { nombreEvento, nombrePersona, cantidadPersonas, abono, fecha, descripcion, nombreReservante, telefonoReservante, emailReservante } = req.body;
+    const { nombreEvento, nombrePersona, cantidadPersonas, abono, descripcion, nombreReservante, telefonoReservante, emailReservante, fechaInicio, fechaFin, estado, valorEvento } = req.body;
 
-    if (!id || !nombreEvento || !nombrePersona || !cantidadPersonas || !abono || !fecha || !descripcion || !nombreReservante || !telefonoReservante || !emailReservante) {
+    if (!id || !nombreEvento || !nombrePersona || !cantidadPersonas || !abono || !nombreReservante || !telefonoReservante || !emailReservante) {
         return res.status(400).json({
             status: "error",
             message: "Debe de ingresar todos los campos correctamente"
@@ -108,7 +115,7 @@ export const editarEvento = async (req, res) => {
 
     try {
         const evento = await tbl_Eventos.findByPk(id);
-        
+
         if (!evento) {
             return res.status(404).json({
                 status: "error",
@@ -120,7 +127,10 @@ export const editarEvento = async (req, res) => {
         evento.nombrePersona = nombrePersona;
         evento.cantidadPersonas = cantidadPersonas;
         evento.abono = abono;
-        evento.fecha = fecha;
+        evento.valorEvento = valorEvento;
+        evento.fechaInicio = fechaInicio;
+        evento.fechaFin = fechaFin;
+        evento.estado = estado;
         evento.descripcion = descripcion;
         evento.nombreReservante = nombreReservante;
         evento.telefonoReservante = telefonoReservante;
@@ -131,7 +141,7 @@ export const editarEvento = async (req, res) => {
         res.status(200).json({
             status: "success",
             message: "Evento actualizado correctamente",
-        
+
         });
     } catch (error) {
         res.status(500).json({
@@ -159,43 +169,45 @@ export const editarEvento = async (req, res) => {
  * @param {Object} res - Objeto de respuesta (Response) de Express.
  * @returns {JSON} Devuelve un objeto JSON que indica el éxito del cambio de estado o un mensaje de error en caso contrario.
  */
-export const cambiarEstadoEvento = async (req, res)=>{
-    const {estado}=req.body;
-    const {id}=req.params;
+export const cambiarEstadoEvento = async (req, res) => {
+    const { estado } = req.body;
+    const { id } = req.params;
 
-    if(!id || (estado !==0 && estado !==1)){
+    if (!id || (estado !== 0 && estado !== 1)) {
         res.status(400).json({
-            status:"error",
-            message:"Debes de ingresar todos los datos"
+            status: "error",
+            message: "Debes de ingresar todos los datos"
         });
     }
     try {
-        const eventoExistente =await tbl_Eventos.findOne({
-            where:{
-                id:id
+        const eventoExistente = await tbl_Eventos.findOne({
+            where: {
+                id: id
             }
         })
-        if(!eventoExistente){
+        if (!eventoExistente) {
             res.status(400).json({
-                status:"error",
-                message:"El evento no existe"
+                status: "error",
+                message: "El evento no existe"
             });
         }
         await tbl_Eventos.update(
-            {estado}, 
-        {where:{
-            id:id
-        }})
+            { estado },
+            {
+                where: {
+                    id: id
+                }
+            })
         res.status(200).json({
-            status:"success",
-            message:"Estado cambiado con exito"
+            status: "success",
+            message: "Estado cambiado con exito"
         });
     } catch (error) {
         res.status(500).json({
-            status:"error",
-            message:"Error en el servidor",
-            error:error.message
-        });  
+            status: "error",
+            message: "Error en el servidor",
+            error: error.message
+        });
     }
 }
 
@@ -211,20 +223,20 @@ export const cambiarEstadoEvento = async (req, res)=>{
  * @param {Object} res - Objeto de respuesta (Response) de Express.
  * @returns {JSON} Devuelve un objeto JSON que contiene una lista de todos los eventos registrados o un mensaje de error en caso de problemas con el servidor.
  */
-export const traerTodosEventos = async (req, res)=>{
+export const traerTodosEventos = async (req, res) => {
     try {
-        const traerTodo= await tbl_Eventos.findAll();
+        const traerTodo = await tbl_Eventos.findAll();
         res.status(200).json({
-            status:"success",
-            message:"datos traidos con exito",
-            data:traerTodo
+            status: "success",
+            message: "datos traidos con exito",
+            data: traerTodo
         });
     } catch (error) {
         res.status(500).json({
-            status:"error",
-            message:"Error del servidor",
-          error:error.message
-        }); 
+            status: "error",
+            message: "Error del servidor",
+            error: error.message
+        });
     }
 }
 

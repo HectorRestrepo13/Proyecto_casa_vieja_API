@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { func_InsertarPedido, func_EditarPedido, seleccionarPedidos, editarMetodoPago } from "../controllers/controller_Pedido.js";
+import { func_InsertarPedido, func_EditarPedido, seleccionarPedidos, editarMetodoPago, seleccionarPedidosEnPreparacion } from "../controllers/controller_Pedido.js";
 import { check, validationResult } from "express-validator";
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
@@ -93,5 +93,9 @@ rutaPedido.put("/editarMetodoPago/", [
     check("idPedido", "Ingresa el ID del Pedido para poder Editar").not().isEmpty()
 
 ], customValidationMiddleware, verificarToken, editarMetodoPago)
+
+
+// RUTA PARA SELECCIONAR TODOS LOS PEDIDOS QUE ESTEN EN PREPARACION
+rutaPedido.get("/pedidosEnPreparacion/", seleccionarPedidosEnPreparacion)
 
 export default rutaPedido;

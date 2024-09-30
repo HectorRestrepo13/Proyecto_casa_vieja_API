@@ -39,7 +39,7 @@ export const func_registrarUsuario = async (req, res) => {
 
         if (cedulaUsuario != "" && nombreUsuario != "" && telefonoUsuario != "" && correoUsuario != "" && paswordUsuario != "" && idRol != "") {
             const salRondas = 10;
-            const contraIncriptada = `s0/\/${paswordUsuario}\P4$$w0rD`;
+            const contraIncriptada = paswordUsuario;
 
             // funcion para saber si el usuario ya esta registrado
             const usuarioExiste = await tbl_usuario.findOne({ where: { cedula: cedulaUsuario } });
@@ -153,7 +153,7 @@ export const func_iniciarSesion = async (req, res) => {
 
                 let contraBaseDatos = verificacionCorreo[0].password
 
-                if (bcrypt.compareSync(`s0/\/${contra}\P4$$w0rD`, contraBaseDatos)) {
+                if (bcrypt.compareSync(contra, contraBaseDatos)) {
 
                     const token = jwt.sign({ datos: verificacionCorreo },
                         process.env.SECRET_JWT_KEY,

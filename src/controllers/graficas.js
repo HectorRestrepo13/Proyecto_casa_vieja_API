@@ -2,6 +2,7 @@ import { tbl_DetallePedidos } from "../models/tbl_DetallePedidos.js";
 import { tbl_Menu } from "../models/tbl_Menu.js";
 import { tbl_Pedido } from "../models/tbl_Pedido.js";
 import { tbl_usuario } from "../models/tbl_Usuario.js";
+import { tbl_Cierre } from "../models/tbl_Cierre.js";
 
 import { Op, fn, col, literal } from "sequelize";
 
@@ -160,3 +161,64 @@ export const pedidosMasTomados = async (req, res) => {
 
 
 }
+
+// -- FIN FUNCION --
+
+// FUNCION PARA OBTENER LOS VALORES DEL TOTAL DE VENTAS QUE SE HIZO CADA MES DEL AÑO QUE ESCOJA EL USUARIO
+
+export const totalVentasCadaMes = async (req, res) => {
+
+    const { año } = req.body;
+
+    // Código a ejecutar si 'año' y 'mes' son números y no están vacíos
+    if (año !== "" && !isNaN(año)) {
+
+        try {
+
+            const resultado = await tbl_Cierre.findAll({
+                attributes: [
+                    [fn('MONTH', col('fecha')), 'mes'], // Extraer el mes de la fecha
+                    [fn('SUM', col('valorTotalPlatosVendidos')), 'total_vendido'] // Sumar el valor total de los platos vendidos
+                ],
+                where: {
+                    fecha: {
+                        [Op.and]: [
+                            literal(`YEAR(fecha) = ${año}`) // Filtrar por el año específico
+                        ]
+                    }
+                },
+                group: [fn('MONTH', col('fecha'))], // Agrupar por mes
+                order: [[fn('MONTH', col('fecha')), 'ASC']] // Ordenar por mes ascendente
+            });
+
+            res.json({
+                status: true,
+                descripcion: "Datos Obtenidos con Exito",
+                data: resultado,
+                error: null
+            })
+
+
+        } catch (error) {
+            res.json({
+                status: false,
+                descripcion: "Hubo un Error en la API",
+                data: null,
+                error: error
+            })
+        }
+
+    }
+    else {
+        res.json({
+            status: false,
+            descripcion: "Hubo un Error en la API",
+            data: null,
+            error: "Error al Enviar los Parametros,Estan Nulos o no son Numeros"
+        })
+    }
+
+
+}
+
+// -- FIN FUNCION --
