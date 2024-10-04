@@ -658,7 +658,7 @@ export const anularItemMenu = async (req, res) => {
         if (result > 0) {
             res.status(200).send({
                 status: true,
-                descripcion: "Item Anulado con Exito",
+                descripcion: "Menu Actualizado con Exito",
                 datos: result,
                 error: null
             });
